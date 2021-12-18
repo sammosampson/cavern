@@ -8,10 +8,15 @@ pub fn create_bat_collision() -> Collision {
     Collision(CollidedWith::Bat)
 }
 
+pub fn create_goal_collision(goal_index: u8) -> Collision {
+    Collision(CollidedWith::Goal(goal_index))
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CollidedWith {
     Wall,
-    Bat
+    Bat,
+    Goal(u8)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

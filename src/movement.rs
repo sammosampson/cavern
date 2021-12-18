@@ -3,8 +3,24 @@ use crate::prelude::*;
 #[derive(Debug, Copy, Clone)]
 pub struct Position(pub Vector);
 
+impl Deref for Position {
+    type Target = Vector;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub struct NextPosition(pub Vector);
+
+impl Deref for NextPosition {
+    type Target = Vector;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Velocity(pub f32);

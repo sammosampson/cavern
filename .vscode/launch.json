@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'tower'",
+            "name": "Debug executable 'boing'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=tower",
-                    "--package=tower"
+                    "--bin=boing",
+                    "--package=boing"
                 ],
                 "filter": {
-                    "name": "tower",
+                    "name": "boing",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'tower'",
+            "name": "Debug unit tests in executable 'boing'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=tower",
-                    "--package=tower"
+                    "--bin=boing",
+                    "--package=boing"
                 ],
                 "filter": {
-                    "name": "tower",
+                    "name": "boing",
                     "kind": "bin"
                 }
             },
