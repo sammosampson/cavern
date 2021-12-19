@@ -12,6 +12,7 @@ mod time;
 mod input;
 mod collision;
 mod animation;
+mod sound;
 
 mod prelude {
     pub use std::io::Cursor;
@@ -34,6 +35,7 @@ mod prelude {
     pub use crate::input::*;
     pub use crate::collision::*;
     pub use crate::animation::*;
+    pub use crate::sound::*;
 }
 
 use prelude::*;

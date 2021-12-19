@@ -28,8 +28,12 @@ impl Vector {
         }
     }
 
-    pub fn cross(&self, to_cross: Vector) -> f32 {
-        (self.x * to_cross.y) - (self.y * to_cross.x)
+    pub fn to_x_inverted(&self) -> Vector {
+        Self::new(-self.x, self.y)
+    }
+
+    pub fn to_y_inverted(&self) -> Vector {
+        Self::new(self.x, -self.y)
     }
 }
 

@@ -1,29 +1,30 @@
 use crate::prelude::*;
 
-pub fn create_wall_collision() -> Collision {
-    Collision(CollidedWith::Wall)
+pub fn create_wall_collision() -> WallCollision {
+    WallCollision
 }
 
-pub fn create_bat_collision() -> Collision {
-    Collision(CollidedWith::Bat)
+pub fn create_bat_collision() -> BatCollision {
+    BatCollision
 }
 
-pub fn create_goal_collision(goal_index: u8) -> Collision {
-    Collision(CollidedWith::Goal(goal_index))
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CollidedWith {
-    Wall,
-    Bat,
-    Goal(u8)
+pub fn create_goal_collision(goal_index: u8) -> InGoal {
+    InGoal(goal_index)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct Collision(CollidedWith);
+pub struct WallCollision;
 
-impl Deref for Collision {
-    type Target = CollidedWith;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct BatCollision;
+
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct InGoal(u8);
+
+impl Deref for InGoal {
+    type Target = u8;
 
     fn deref(&self) -> &Self::Target {
         &self.0
