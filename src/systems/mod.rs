@@ -40,7 +40,7 @@ pub fn build_play_schedule() -> Schedule {
         .flush()
         .add_thread_local(animation::render_animation_frame_system())
         .add_thread_local(rendering::render_system())
-        .add_thread_local(sound::play_sound_system())
+        .add_system(sound::play_sound_system())
         .add_system(game_state::exit_if_requested_system())
         .add_system(events::destroy_system_events_system())
         .build()

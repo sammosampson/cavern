@@ -47,18 +47,18 @@ impl AudioPlayer {
     }
 
     pub fn play_sound(&self, sound: SoundResources) -> Result<(), SoundError> {
-        
         let (_stream, stream_handle) = OutputStream::try_default().map_err(|_| SoundError::FailedToOpenStream)?;
         let cursor = Cursor::new(get_sound_resource(sound));
         let source = Decoder::new(BufReader::new(cursor)).map_err(|_| SoundError::FailedToDecodeStream)?;
         let sink = Sink::try_new(&stream_handle).map_err(|_| SoundError::FailedToCreateSink)?;
         sink.append(source);
+        sink.sleep_until_end();
         Ok(())
     }
 }
 
 fn get_sound_resource(sound: SoundResources) -> &'static[u8] {
     match sound {
-        SoundResources::WallImpact => &include_bytes!("../sounds/bounce0.ogg")[..],
+        SoundResources::WallImpact => &include_bytes!("../sounds/hit_fast0.ogg")[..],
     }
 }
