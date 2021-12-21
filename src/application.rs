@@ -2,7 +2,8 @@ use crate::prelude::*;
 
 #[derive(Debug)]
 pub enum ApplicationError {
-    RendererError(RendererError)
+    RendererError(RendererError),
+    SoundError(SoundError)
 }
 pub struct Application {
     pub world: World, 
@@ -69,6 +70,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let exit_state_notifier = create_exit_state_notifier();
     let system_event_producer = create_system_event_producer();
     let system_event_channel = create_system_event_channel();
+    let audio_player = create_audio_player()?;
     let game_state = GameState::Playing;
         
     let mut resources = Resources::default();
@@ -78,6 +80,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     &mut resources.insert(exit_state_notifier);
     &mut resources.insert(system_event_producer);
     &mut resources.insert(system_event_channel);
+    &mut resources.insert(audio_player);
     &mut resources.insert(game_state);
     Ok(resources)
 }
@@ -85,6 +88,12 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
 fn create_screen_renderer(event_loop: &SystemEventLoop) -> Result<ScreenRenderer, ApplicationError> {
     Ok(
         ScreenRenderer::new(&event_loop.get_loop())
-        .map_err(|error| ApplicationError::RendererError(error))?
+            .map_err(|error| ApplicationError::RendererError(error))?
+    )
+}
+
+fn create_audio_player() -> Result<AudioPlayer, ApplicationError> {
+    Ok(
+        AudioPlayer::new().map_err(|error| ApplicationError::SoundError(error))?
     )
 }

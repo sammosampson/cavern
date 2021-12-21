@@ -2,11 +2,9 @@ use crate::prelude::*;
 
 #[system(for_each)]
 pub fn render_animation_frame(
-    entity: &Entity,
     entity_id: &WorldEntityId,
     animation: &Animation,
     position: &Position,
-    buffer: &mut CommandBuffer,
     #[resource] game_timer: &GameTimer,
     #[resource] screen_renderer: &ScreenRenderer,
     #[resource] item_renderer: &mut ItemRenderer,
