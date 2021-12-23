@@ -42,4 +42,8 @@ impl ItemRenderer {
     pub fn find_mut(&mut self, entity_id: &WorldEntityId) -> Option<&mut ItemRendererItem> {
         self.render_items.get_mut(entity_id)
     }
+
+    pub fn contains(&self, entity_id: &WorldEntityId) -> bool {
+        self.render_items.contains_key(entity_id)
+    }
 }

@@ -41,5 +41,7 @@ mod prelude {
 use prelude::*;
 
 fn main() {
-    Application::build().unwrap().run();
+    Application::build()
+    .expect("Application did not build")
+    .run();
 }

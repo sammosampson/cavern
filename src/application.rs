@@ -9,6 +9,7 @@ pub struct Application {
     pub world: World, 
     pub resources: Resources,
     play_schedule: Schedule,
+    score_schedule: Schedule,
     event_loop: SystemEventLoop
 }
 
@@ -18,11 +19,13 @@ impl Application {
         let world = build_world();
         let resources = build_resources(&event_loop)?;
         let play_schedule = build_play_schedule();
+        let score_schedule = build_score_schedule();
        
         let application = Self {
             world,
             resources, 
             play_schedule,
+            score_schedule,
             event_loop
         };
 
@@ -31,21 +34,15 @@ impl Application {
 
     pub fn run(&mut self) {
         loop {
-            if self.should_exit() {
+            if !self.run_loop() {
                 return;
             }
-    
-            self.run_loop();
         }
     }
     
-    pub fn should_exit(&mut self) -> bool {
-        self.resources.get::<ExitStateNotifier>().unwrap().should_exit
-    }
-
-    fn run_loop(&mut self) {
+    fn run_loop(&mut self) -> bool {
         self.process_events();
-        self.execute_schedule();        
+        self.execute_schedule()     
     }
 
     fn process_events(&mut self) {
@@ -55,11 +52,15 @@ impl Application {
     
     }
 
-    fn execute_schedule(&mut self) {
-        let current_state = self.resources.get::<GameState>().unwrap().clone();
+    fn execute_schedule(&mut self) -> bool {
+        let current_state = self.resources.get::<GameState>().unwrap().status();
         match current_state {
-            GameState::Playing => &mut self.play_schedule.execute(&mut self.world, &mut self.resources),
+            GameStatus::None => {},
+            GameStatus::Playing => self.play_schedule.execute(&mut self.world, &mut self.resources),
+            GameStatus::Scoring(_) => self.score_schedule.execute(&mut self.world, &mut self.resources),
+            GameStatus::Exiting => return false
         };        
+        true
     }
 }
 
@@ -67,17 +68,15 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let screen_renderer = create_screen_renderer(event_loop)?;
     let item_renderer = create_item_renderer();
     let game_timer = create_game_timer();
-    let exit_state_notifier = create_exit_state_notifier();
+    let game_state = create_game_state();
     let system_event_producer = create_system_event_producer();
     let system_event_channel = create_system_event_channel();
     let audio_player = create_audio_player()?;
-    let game_state = GameState::Playing;
         
     let mut resources = Resources::default();
     &mut resources.insert(screen_renderer);
     &mut resources.insert(item_renderer);
     &mut resources.insert(game_timer);
-    &mut resources.insert(exit_state_notifier);
     &mut resources.insert(system_event_producer);
     &mut resources.insert(system_event_channel);
     &mut resources.insert(audio_player);

@@ -28,14 +28,3 @@ pub fn handle_bat_collision(
     buffer.push(create_impact(game_timer, *position));
     buffer.remove_component::<BatCollision>(*entity);    
 }
-
-#[system(for_each)]
-#[filter(component::<InGoal>())]
-pub fn handle_ball_in_goal(
-    entity: &Entity,
-    position: &mut Position,
-    buffer: &mut CommandBuffer
-) {
-    **position = Vector::new(HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT);
-    buffer.remove_component::<InGoal>(*entity);    
-}

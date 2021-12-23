@@ -9,7 +9,10 @@ const BAT_THRESHOLD: f32 = HALF_SCREEN_WIDTH - BAT_POSITION_OFFSET - HALF_BAT_WI
 #[read_component(NextPosition)]
 #[read_component(Position)]
 #[read_component(Heading)]
-pub fn check_collision(buffer: &mut CommandBuffer, world: &mut SubWorld
+pub fn check_collision(
+    buffer: &mut CommandBuffer,
+    world: &mut SubWorld,
+    #[resource] game_state: &mut GameState,
 ) {
     let balls = get_balls(world);
     
@@ -17,13 +20,17 @@ pub fn check_collision(buffer: &mut CommandBuffer, world: &mut SubWorld
         return;
     }
 
-    let (ball, position, next_position, heading) = balls.first().unwrap();
+    let (ball, position, next_position, heading) = balls
+        .first()
+        .expect("No ball found");
+
     let bat_index = bat_index(**heading);
     let ball_last_distance_to_centre = ball_distance_to_centre(**position);
     let ball_next_distance_to_centre = ball_distance_to_centre(**next_position);
     
     if ball_next_distance_to_centre >= GOAL_THRESHOLD {
-        buffer.add_component(*ball, create_goal_collision(bat_index));
+        println!("ball_next_distance_to_centre {:?}", ball_next_distance_to_centre);
+        game_state.transition_to(GameStatus::Scoring(bat_index));
         return;
     }
         
@@ -67,7 +74,7 @@ fn get_bat_position(world: &SubWorld, bat_index: u8) -> Vector {
         .map(|(bat_position, _)| *bat_position)
         .collect();
 
-    **bats.first().unwrap()
+    **bats.first().expect("No bat found")
 }
 
 fn vertical_ball_extents(position: Vector) -> (f32, f32) {

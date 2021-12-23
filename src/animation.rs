@@ -37,7 +37,9 @@ impl Animation {
     }
     
     pub fn get_frame_texture(&self, frame: usize) -> TextureResources {
-        *self.frames.get(frame).unwrap()
+        *self.frames
+            .get(frame)
+            .expect("No animation frame found")
     }
     
 }

@@ -28,11 +28,31 @@ impl Deref for NextPosition {
     }
 }
 
+impl DerefMut for NextPosition {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Velocity(pub f32);
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct MaximumVelocity(pub f32);
+
+impl Deref for MaximumVelocity {
+    type Target = f32;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for MaximumVelocity {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 #[derive(Default, Debug, Copy, Clone)]
 pub struct Heading(pub Vector);

@@ -12,7 +12,10 @@ pub fn build_play_render_graph(
     #[resource] item_renderer: &mut ItemRenderer,
     buffer: &mut CommandBuffer,
 ) {
-    item_renderer.add_item_to_render(&screen_renderer, entity_id, texture.0, position.0, layer.0).unwrap();
+    item_renderer
+        .add_item_to_render(&screen_renderer, entity_id, texture.0, position.0, layer.0)
+        .expect("Could not add item to render");
+
     buffer.add_component(*entity, RenderGraphSet);
 }   
 
@@ -22,8 +25,7 @@ pub fn render(
     #[resource] item_renderer: &mut ItemRenderer
 ) {
     screen_renderer
-    .render(item_renderer)
-    .map_err(|error| ApplicationError::RendererError(error))
-    .unwrap();
+        .render(item_renderer)
+        .expect("Could not render");
 }
 

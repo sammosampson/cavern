@@ -7,6 +7,9 @@ pub fn play_sound(
     #[resource] audio_player: &mut AudioPlayer,
     buffer: &mut CommandBuffer,
 ) {
-    audio_player.play_sound(**sound).unwrap();
+    audio_player
+        .play_sound(**sound)
+        .expect("sound could not be played");
+        
     buffer.remove(*entity);
 }   

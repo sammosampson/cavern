@@ -8,10 +8,6 @@ pub fn create_bat_collision() -> BatCollision {
     BatCollision
 }
 
-pub fn create_goal_collision(goal_index: u8) -> InGoal {
-    InGoal(goal_index)
-}
-
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct WallCollision;
 
@@ -19,17 +15,6 @@ pub struct WallCollision;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct BatCollision;
 
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct InGoal(u8);
-
-impl Deref for InGoal {
-    type Target = u8;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
 
 pub fn create_impact(game_timer: &GameTimer, position: Position) -> (WorldEntityId, Animation, Position) {
  (create_impact_id(game_timer), create_impact_animation(game_timer), position)
