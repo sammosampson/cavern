@@ -12,16 +12,18 @@ pub enum SoundError {
 #[derive(Debug, Copy, Clone)]
 pub struct Sound(SoundResources);
 
+impl From<SoundResources> for Sound {
+    fn from(from: SoundResources) -> Self {
+        Self(from)
+    }
+}
+
 impl Deref for Sound {
     type Target=SoundResources;
 
     fn deref(&self) -> &Self::Target {
         &self.0
     }
-}
-
-pub fn create_wall_impact_sound() -> (WorldEntityId, Sound) {
-    (WorldEntityId::from("wallImpactSound"), Sound(SoundResources::WallImpact))
 }
 
 pub struct AudioPlayer;

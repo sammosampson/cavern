@@ -18,7 +18,7 @@ impl ItemRendererItem {
         layer: u8
     ) -> Result<Self, RendererError> {
         let texture = create_item_texture(&screen_renderer, texture)?;
-        println!("{:?}", entity_id);
+        println!("Rendering {:?}", entity_id);
         Ok(
             Self {
                 layer,

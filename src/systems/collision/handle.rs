@@ -10,8 +10,8 @@ pub fn handle_wall_collision(
     #[resource] game_timer: &GameTimer,
 ) {
     **heading = heading.to_y_inverted();
-    buffer.push(create_impact(game_timer, *position));
-    buffer.push(create_wall_impact_sound());
+    add_impact_effect(buffer, game_timer, *position);
+    add_wall_impact_sound(buffer);
     buffer.remove_component::<WallCollision>(*entity);    
 }
 
@@ -25,6 +25,6 @@ pub fn handle_bat_collision(
     #[resource] game_timer: &GameTimer,
 ) {
     **heading = heading.to_x_inverted();
-    buffer.push(create_impact(game_timer, *position));
+    add_impact_effect(buffer, game_timer, *position);
     buffer.remove_component::<BatCollision>(*entity);    
 }

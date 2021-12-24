@@ -9,6 +9,8 @@ pub enum TextureResources {
     Impact2,
     Impact3,
     Impact4,
+    Effect0,
+    Effect1
 }
 
 pub fn get_texture_resource(texture: TextureResources) -> &'static[u8] {
@@ -22,5 +24,7 @@ pub fn get_texture_resource(texture: TextureResources) -> &'static[u8] {
         TextureResources::Impact2 => &include_bytes!("../../../images/impact2.png")[..],
         TextureResources::Impact3 => &include_bytes!("../../../images/impact3.png")[..],
         TextureResources::Impact4 => &include_bytes!("../../../images/impact4.png")[..],
+        TextureResources::Effect0 => &include_bytes!("../../../images/effect0.png")[..],
+        TextureResources::Effect1 => &include_bytes!("../../../images/effect1.png")[..],
     }
 }

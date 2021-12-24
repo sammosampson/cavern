@@ -1,3 +1,5 @@
+use crate::prelude::*;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GameStatus {
     None,
@@ -55,5 +57,9 @@ impl GameState {
             return entered_on
         }
         0.0
+    }
+
+    pub fn time_in_state(&self, timer: &GameTimer) -> f32 {
+        timer.total_game_time() - self.entered_on()
     }
 }
