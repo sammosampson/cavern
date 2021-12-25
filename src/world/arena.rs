@@ -16,7 +16,8 @@ pub fn add_arena_score_effect(buffer: &mut CommandBuffer, game_timer: &GameTimer
     buffer.push((
         create_arena_score_effect_id(index),
         create_arena_score_effect_animation(game_timer, index),
-        Layer(0),
+        Layer(1),
+        Effect,
         Position(centre_screen()),
     ));
 }

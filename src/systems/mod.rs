@@ -5,6 +5,7 @@ mod movement;
 mod time;
 mod collision;
 mod animation;
+mod effects;
 mod sound;
 mod world;
 
@@ -37,9 +38,13 @@ pub fn build_play_schedule() -> Schedule {
         .flush()
         .add_thread_local(movement::movement_system())
         .flush()
+        .add_thread_local(animation::render_first_animation_frame_system())
         .add_thread_local(animation::render_animation_frame_system())
+        .flush()
         .add_thread_local(rendering::render_system())
         .add_system(sound::play_sound_system())
+        .add_thread_local(effects::remove_dead_effects_system())
+        .flush()
         .add_thread_local(world::remove_entity_system())
         .add_system(game_state::exit_if_requested_system())
         .add_system(events::destroy_system_events_system())
@@ -60,9 +65,13 @@ pub fn build_score_schedule() -> Schedule {
         .flush()
         .add_thread_local(movement::movement_system())
         .flush()
+        .add_thread_local(animation::render_first_animation_frame_system())
         .add_thread_local(animation::render_animation_frame_system())
+        .flush()
         .add_thread_local(rendering::render_system())
         .add_system(sound::play_sound_system())
+        .add_thread_local(effects::remove_dead_effects_system())
+        .flush()
         .add_thread_local(world::remove_entity_system())
         .add_system(game_state::exit_if_requested_system())
         .add_system(events::destroy_system_events_system())

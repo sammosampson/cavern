@@ -13,9 +13,10 @@ pub fn add_impact_effect(buffer: &mut CommandBuffer, game_timer: &GameTimer, pos
     buffer.push(create_impact_effect(game_timer, position));   
 }
 
-fn create_impact_effect(game_timer: &GameTimer, position: Position) -> (WorldEntityId, Animation, Layer, Position) {(
+fn create_impact_effect(game_timer: &GameTimer, position: Position) -> (WorldEntityId, Animation, Effect, Layer, Position) {(
     create_impact_effect_id(game_timer),
-    create_impact_effect_animation(game_timer), 
+    create_impact_effect_animation(game_timer),
+    Effect,
     Layer(1),
     position
 )}

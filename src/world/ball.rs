@@ -10,7 +10,7 @@ pub fn add_ball(buffer: &mut CommandBuffer) {
     buffer.push((
         Ball,
         Texture(TextureResources::Ball), 
-        Layer(1), 
+        Layer(2), 
         Position(centre_screen()), 
         MaximumVelocity(150.0),
         Heading(Angle::from_degrees(135.0).into()),

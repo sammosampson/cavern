@@ -12,6 +12,7 @@ mod time;
 mod input;
 mod collision;
 mod animation;
+mod effects;
 mod sound;
 
 mod prelude {
@@ -35,7 +36,9 @@ mod prelude {
     pub use crate::input::*;
     pub use crate::collision::*;
     pub use crate::animation::*;
+    pub use crate::effects::*;
     pub use crate::sound::*;
+
 }
 
 use prelude::*;

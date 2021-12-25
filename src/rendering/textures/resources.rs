@@ -5,7 +5,11 @@ pub enum TextureResources {
     Ball,
     Table,
     Bat00,
+    Bat01,
+    Bat02,
     Bat10,
+    Bat11,
+    Bat12,
     Impact0,
     Impact1,
     Impact2,
@@ -19,7 +23,11 @@ pub fn initialise_texture_cache(textures: &mut TextureCache, screen_renderer: &S
     textures.insert(screen_renderer, TextureResources::Ball, &include_bytes!("../../../images/ball.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Table, &include_bytes!("../../../images/table.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Bat00, &include_bytes!("../../../images/bat00.png")[..])?;
+    textures.insert(screen_renderer, TextureResources::Bat01, &include_bytes!("../../../images/bat01.png")[..])?;
+    textures.insert(screen_renderer, TextureResources::Bat02, &include_bytes!("../../../images/bat02.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Bat10, &include_bytes!("../../../images/bat10.png")[..])?;
+    textures.insert(screen_renderer, TextureResources::Bat11, &include_bytes!("../../../images/bat11.png")[..])?;
+    textures.insert(screen_renderer, TextureResources::Bat12, &include_bytes!("../../../images/bat12.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Impact0, &include_bytes!("../../../images/impact0.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Impact1, &include_bytes!("../../../images/impact1.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Impact2, &include_bytes!("../../../images/impact2.png")[..])?;

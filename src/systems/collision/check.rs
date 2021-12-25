@@ -29,18 +29,17 @@ pub fn check_collision(
     let ball_next_distance_to_centre = ball_distance_to_centre(**next_position);
     
     if ball_next_distance_to_centre >= GOAL_THRESHOLD {
-        println!("ball_next_distance_to_centre {:?}", ball_next_distance_to_centre);
         game_state.transition_to(GameStatus::Scoring(bat_index));
         return;
     }
         
     if ball_last_distance_to_centre < BAT_THRESHOLD && ball_next_distance_to_centre > BAT_THRESHOLD {    
-        let bat_position = get_bat_position(world, bat_index);
+        let (bat_entity, bat_position) = get_bat_position(world, bat_index);
         let (ball_top_extent, ball_bottom_extent) = vertical_ball_extents(**next_position);
         let (bat_top_extent, bat_bottom_extent) = vertical_bat_extents(bat_position);
         
         if ball_top_extent <= bat_top_extent && ball_bottom_extent >= bat_bottom_extent {
-            buffer.add_component(*ball, create_bat_collision());
+            buffer.add_component(*ball, create_bat_collision(bat_entity, bat_index));
         }
         return;
     } 
@@ -67,14 +66,14 @@ fn bat_index(heading: Vector) -> u8 {
     if heading.x < 0.0 { 0 } else { 1 }
 }
 
-fn get_bat_position(world: &SubWorld, bat_index: u8) -> Vector {
-    let bats: Vec<Position> = <(&Position, &Bat)>::query()
+fn get_bat_position(world: &SubWorld, bat_index: u8) -> (Entity, Vector) {
+    let bats: Vec<(Entity, Vector)> = <(Entity, &Position, &Bat)>::query()
         .iter(world)
-        .filter(|(_, bat)| ***bat == bat_index)
-        .map(|(bat_position, _)| *bat_position)
+        .filter(|(_, __, bat)| ***bat == bat_index)
+        .map(|(entity, bat_position, _)| (*entity, **bat_position))
         .collect();
 
-    **bats.first().expect("No bat found")
+    *bats.first().expect("No bat found")
 }
 
 fn vertical_ball_extents(position: Vector) -> (f32, f32) {

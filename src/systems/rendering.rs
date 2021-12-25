@@ -13,17 +13,26 @@ pub fn build_play_render_graph(
     #[resource] item_renderer: &mut ItemRenderer,
     buffer: &mut CommandBuffer,
 ) {
-    item_renderer
-        .add_item_to_render(
-            screen_renderer, 
-            textures,
-            entity_id, 
-            texture.0, 
-            position.0, 
-            layer.0
-        )
-        .expect("Could not add item to render");
+    match item_renderer.find_mut(entity_id) {
+        Some(item) => {
+            item.set_texture(texture.0);
+        }
+        None => {
+            item_renderer
+                .add_item_to_render(
+                    screen_renderer, 
+                    textures,
+                    entity_id, 
+                    texture.0, 
+                    position.0, 
+                    layer.0
+                )
+                .expect("Could not add item to render");
+    
+        }
 
+    }
+    
     buffer.add_component(*entity, RenderGraphSet);
 }   
 

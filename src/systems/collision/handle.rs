@@ -16,9 +16,9 @@ pub fn handle_wall_collision(
 }
 
 #[system(for_each)]
-#[filter(component::<BatCollision>())]
 pub fn handle_bat_collision(
     entity: &Entity,
+    collision: &BatCollision,
     position: &mut Position,
     heading: &mut Heading,
     buffer: &mut CommandBuffer,
@@ -26,5 +26,6 @@ pub fn handle_bat_collision(
 ) {
     **heading = heading.to_x_inverted();
     add_impact_effect(buffer, game_timer, *position);
+    set_bat_hit_effect(buffer, game_timer, collision.bat, collision.index);
     buffer.remove_component::<BatCollision>(*entity);    
 }

@@ -89,8 +89,10 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
 
 pub fn create_texture_cache(screen_renderer: &ScreenRenderer) -> Result<TextureCache, ApplicationError> {
     let mut textures = TextureCache::default();
+
     initialise_texture_cache(&mut textures, screen_renderer)
         .map_err(|error| ApplicationError::TextureError(error))?;
+        
     Ok(textures)
 }
 

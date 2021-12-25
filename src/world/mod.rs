@@ -32,6 +32,10 @@ impl From<String> for WorldEntityId {
 }
 pub struct Remove;
 
+pub fn remove_entity(buffer: &mut CommandBuffer, entity: Entity) {
+    buffer.add_component(entity, Remove)
+}
+
 pub fn centre_screen() -> Vector {
     Vector::new(HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT)
 }

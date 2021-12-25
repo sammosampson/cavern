@@ -12,10 +12,12 @@ pub fn exit_if_requested(
 }
 
 #[system(simple)]
+#[read_component(Bat)]
 pub fn transition_state_to_playing(
     #[resource] game_state: &mut GameState,
     #[resource] game_timer: &mut GameTimer,
     buffer: &mut CommandBuffer,
+    world: &SubWorld
 ) {
     if game_state.has_entered() {
         return;
@@ -23,6 +25,7 @@ pub fn transition_state_to_playing(
 
     match game_state.previous_status() {
         GameStatus::Scoring(_) => {
+            set_normal_bat_textures(buffer, world);
             add_ball(buffer);
         },
         GameStatus::None => {
@@ -39,6 +42,7 @@ pub fn transition_state_to_playing(
 
 #[system(simple)]
 #[read_component(Ball)]
+#[read_component(Bat)]
 pub fn transition_state_to_scored(
     #[resource] game_state: &mut GameState,
     #[resource] game_timer: &mut GameTimer,
@@ -57,6 +61,7 @@ pub fn transition_state_to_scored(
             GameStatus::Playing => {
                 remove_ball(buffer, world);
                 add_arena_score_effect(buffer, game_timer, index);
+                set_losing_bat_score_texture(buffer, world, index);
             },
             _ => {},
         }
@@ -70,4 +75,21 @@ pub fn remove_ball(buffer: &mut CommandBuffer, world: &SubWorld) {
         .filter(component::<Ball>())
         .iter(world)
         .for_each(|entity| buffer.add_component(*entity, Remove));
+}
+
+pub fn set_losing_bat_score_texture(buffer: &mut CommandBuffer, world: &SubWorld, goal_index: u8) {
+    <(Entity, &Bat)>::query()
+        .iter(world)
+        .filter(|(_, bat)| bat.0 == goal_index)
+        .for_each(|(entity, _)|{
+            set_bat_score_texture(buffer, *entity, goal_index);
+        });
+}
+
+pub fn set_normal_bat_textures(buffer: &mut CommandBuffer, world: &SubWorld) {
+    <(Entity, &Bat)>::query()
+        .iter(world)
+        .for_each(|(entity, bat)|{
+            set_normal_bat_texture(buffer, *entity, bat.0);
+        });
 }

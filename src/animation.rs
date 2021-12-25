@@ -4,6 +4,10 @@ pub fn create_animation(total_animation_time: f32, started_at_time: f32) -> Anim
     Animation::new(total_animation_time, started_at_time)
 }
 
+pub fn remove_animation(buffer: &mut CommandBuffer, entity: Entity) {
+    buffer.remove_component::<Animation>(entity)
+}
+
 #[derive(Default, Clone, Debug)]
 pub struct Animation {
     pub total_animation_time: f32,
