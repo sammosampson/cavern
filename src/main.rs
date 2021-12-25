@@ -4,7 +4,7 @@ mod math;
 mod events;
 mod application;
 mod systems;
-mod game_state;
+mod state;
 mod geometry;
 mod movement;
 mod world;
@@ -29,7 +29,7 @@ mod prelude {
     pub use crate::rendering::*;
     pub use crate::application::*;
     pub use crate::systems::*;
-    pub use crate::game_state::*;
+    pub use crate::state::*;
     pub use crate::movement::*;
     pub use crate::world::*;
     pub use crate::time::*;

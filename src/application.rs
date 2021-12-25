@@ -9,6 +9,7 @@ pub enum ApplicationError {
 pub struct Application {
     pub world: World, 
     pub resources: Resources,
+    start_schedule: Schedule,
     play_schedule: Schedule,
     score_schedule: Schedule,
     event_loop: SystemEventLoop
@@ -19,12 +20,14 @@ impl Application {
         let event_loop = create_system_event_loop();
         let world = build_world();
         let resources = build_resources(&event_loop)?;
+        let start_schedule = build_start_schedule();
         let play_schedule = build_play_schedule();
         let score_schedule = build_score_schedule();
        
         let application = Self {
             world,
             resources, 
+            start_schedule,
             play_schedule,
             score_schedule,
             event_loop
@@ -57,6 +60,7 @@ impl Application {
         let current_state = self.resources.get::<GameState>().unwrap().status();
         match current_state {
             GameStatus::None => {},
+            GameStatus::Starting => self.start_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Playing => self.play_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Scoring(_) => self.score_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Exiting => return false
@@ -92,7 +96,7 @@ pub fn create_texture_cache(screen_renderer: &ScreenRenderer) -> Result<TextureC
 
     initialise_texture_cache(&mut textures, screen_renderer)
         .map_err(|error| ApplicationError::TextureError(error))?;
-        
+
     Ok(textures)
 }
 

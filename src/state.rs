@@ -3,6 +3,7 @@ use crate::prelude::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GameStatus {
     None,
+    Starting,
     Playing,
     Scoring(u8),
     Exiting

@@ -1,6 +1,6 @@
 mod rendering;
 mod events;
-mod game_state;
+mod state;
 mod movement;
 mod time;
 mod collision;
@@ -19,9 +19,15 @@ pub fn build_world() -> World {
     world
 }
 
+pub fn build_start_schedule() -> Schedule {
+    Schedule::builder()
+        .add_system(state::transition_state_to_starting_system())
+        .build()
+}
+
 pub fn build_play_schedule() -> Schedule {
     Schedule::builder()
-        .add_system(game_state::transition_state_to_playing_system())
+        .add_system(state::transition_state_to_playing_system())
         .add_system(events::proliferate_system_events_system())
         .add_system(movement::initialise_movement_system())
         .flush()
@@ -46,14 +52,14 @@ pub fn build_play_schedule() -> Schedule {
         .add_thread_local(effects::remove_dead_effects_system())
         .flush()
         .add_thread_local(world::remove_entity_system())
-        .add_system(game_state::exit_if_requested_system())
+        .add_system(state::exit_if_requested_system())
         .add_system(events::destroy_system_events_system())
         .build()
 }
 
 pub fn build_score_schedule() -> Schedule {
     Schedule::builder()
-        .add_system(game_state::transition_state_to_scored_system())
+        .add_system(state::transition_state_to_scored_system())
         .add_system(events::proliferate_system_events_system())
         .flush()
         .add_system(time::calculate_elapsed_time_system())
@@ -73,7 +79,7 @@ pub fn build_score_schedule() -> Schedule {
         .add_thread_local(effects::remove_dead_effects_system())
         .flush()
         .add_thread_local(world::remove_entity_system())
-        .add_system(game_state::exit_if_requested_system())
+        .add_system(state::exit_if_requested_system())
         .add_system(events::destroy_system_events_system())
         .build()
 }
