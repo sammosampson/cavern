@@ -9,11 +9,19 @@ pub fn build_play_render_graph(
     position: &Position,
     layer: &Layer,
     #[resource] screen_renderer: &mut ScreenRenderer,
+    #[resource] textures: &TextureCache,
     #[resource] item_renderer: &mut ItemRenderer,
     buffer: &mut CommandBuffer,
 ) {
     item_renderer
-        .add_item_to_render(&screen_renderer, entity_id, texture.0, position.0, layer.0)
+        .add_item_to_render(
+            screen_renderer, 
+            textures,
+            entity_id, 
+            texture.0, 
+            position.0, 
+            layer.0
+        )
         .expect("Could not add item to render");
 
     buffer.add_component(*entity, RenderGraphSet);
@@ -22,10 +30,11 @@ pub fn build_play_render_graph(
 #[system(simple)]
 pub fn render(
     #[resource] screen_renderer: &mut ScreenRenderer,
+    #[resource] textures: &TextureCache,
     #[resource] item_renderer: &mut ItemRenderer
 ) {
     screen_renderer
-        .render(item_renderer)
+        .render(item_renderer, textures)
         .expect("Could not render");
 }
 

@@ -10,6 +10,7 @@ pub fn render_animation_frame(
     buffer: &mut CommandBuffer,
     #[resource] game_timer: &GameTimer,
     #[resource] screen_renderer: &ScreenRenderer,
+    #[resource] textures: &TextureCache,
     #[resource] item_renderer: &mut ItemRenderer,
 ) {
     println!("animating {:?}", entity_id);
@@ -18,7 +19,8 @@ pub fn render_animation_frame(
         if frame == 0 {
             item_renderer
                 .add_item_to_render(
-                    &screen_renderer,
+                    screen_renderer,
+                    textures,
                     entity_id,
                     frame_texture,
                     position.0, 
@@ -30,10 +32,7 @@ pub fn render_animation_frame(
                 .expect("Could find item to render");
             
             item.set_centre_position(position.0);
-            
-            item
-                .set_texture(&screen_renderer, frame_texture)
-                .expect("Could not set texture");
+            item.set_texture(frame_texture);
         }
     } else {
         buffer.add_component(*entity, Remove);

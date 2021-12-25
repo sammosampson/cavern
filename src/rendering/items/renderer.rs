@@ -14,6 +14,7 @@ impl ItemRenderer {
     pub fn add_item_to_render(
         &mut self,
         screen_renderer: &ScreenRenderer,
+        textures: &TextureCache,
         entity_id: &WorldEntityId,
         texture: TextureResources,
         centre_position: Vector,
@@ -21,7 +22,7 @@ impl ItemRenderer {
     ) -> Result<(), RendererError> {
         self.render_items.insert(
             entity_id.clone(), 
-            ItemRendererItem::new(screen_renderer, entity_id.clone(), texture, centre_position, layer)?
+            ItemRendererItem::new(screen_renderer, textures, entity_id.clone(), texture, centre_position, layer)?
         );
         Ok(())
     }
@@ -30,11 +31,11 @@ impl ItemRenderer {
         self.render_items.remove(entity_id);
     }
 
-    pub fn render(&self, target: &mut Frame) -> Result<(), RendererError> {
+    pub fn render(&self, target: &mut Frame, textures: &TextureCache) -> Result<(), RendererError> {
         let mut items: Vec<_> = self.render_items.iter().collect();
         items.sort_by(|a , b| a.1.layer().cmp(&b.1.layer()));
         for (_, render_item) in items {
-            render_item.render(target)?;
+            render_item.render(target, textures)?;
         }
         Ok(())
     }

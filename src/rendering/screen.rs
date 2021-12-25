@@ -11,10 +11,10 @@ impl ScreenRenderer {
         })
     }
 
-    pub fn render(&mut self, renderer: &ItemRenderer) -> Result<(), RendererError> {
+    pub fn render(&mut self, renderer: &ItemRenderer, textures: &TextureCache) -> Result<(), RendererError> {
         let mut target = self.create_draw_target();        
         clear_target_color_and_depth(&mut target);
-        self.render_sprites(renderer, &mut target)?;
+        self.render_sprites(renderer, textures, &mut target)?;
         complete_target_draw(target)?;
         Ok(())
     }
@@ -23,8 +23,8 @@ impl ScreenRenderer {
         self.display.draw()
     }
 
-    fn render_sprites(&self, renderer: &ItemRenderer, target: &mut Frame) -> Result<(), RendererError> {
-        renderer.render(target)?;
+    fn render_sprites(&self, renderer: &ItemRenderer, textures: &TextureCache, target: &mut Frame) -> Result<(), RendererError> {
+        renderer.render(target, textures)?;
         Ok(())
     }
 }

@@ -1,16 +1,12 @@
 use crate::prelude::*;
 
-pub fn create_texture(display: &Display, texture_resource: TextureResources) -> Result<SamplerTexture, TextureError> {
-    SamplerTexture::new(display, get_texture_resource(texture_resource))
-}
-
 pub struct SamplerTexture {
     texture: SrgbTexture2d,
     dimensions: Dimensions  
 }
 
 impl SamplerTexture {
-    fn new(display: &Display, image_data: &[u8]) -> Result<Self, TextureError> {
+    pub fn new(display: &Display, image_data: &[u8]) -> Result<Self, TextureError> {
         let image = load_rgba_image(image_data)?;
         let dimensions = image.dimensions();
         let image = convert_to_raw_image(image, dimensions);

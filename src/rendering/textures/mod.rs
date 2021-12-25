@@ -10,7 +10,8 @@ pub use resources::*;
 #[derive(Debug)]
 pub enum TextureError {
     ImageError,
-    TextureCreationError
+    TextureCreationError, 
+    TextureNotFound
 }
 
 #[derive(Debug, Clone, Copy)]
