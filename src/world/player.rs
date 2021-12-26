@@ -6,6 +6,30 @@ pub const BAT_WIDTH: f32 = 18.0;
 pub const HALF_BAT_HEIGHT: f32 = BAT_HEIGHT * 0.5;
 pub const HALF_BAT_WIDTH: f32 = BAT_WIDTH * 0.5;
 
+pub fn create_player_score() -> PlayerScore {
+    PlayerScore::default()
+}
+
+#[derive(Default, Debug)]
+pub struct PlayerScore {
+    player1: u8,
+    player2: u8
+}
+
+impl PlayerScore {
+    pub fn game_won(&self) -> bool {
+        self.player1 == 9 || self.player2 == 9
+    }
+
+    pub fn increment(&mut self, index: u8) {
+        if index == 0 {
+            self.player1 += 1;
+        } else {
+            self.player2 += 1;
+        }
+    }
+}
+
 pub struct Player;
 
 #[derive(Default, Debug, Copy, Clone)]

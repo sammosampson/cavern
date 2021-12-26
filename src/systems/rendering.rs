@@ -27,7 +27,7 @@ pub fn build_play_render_graph(
                     position.0, 
                     layer.0
                 )
-                .expect("Could not add item to render");
+                .expect(&format!("Could not add item to render {:?}", entity_id));
     
         }
 

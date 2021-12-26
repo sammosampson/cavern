@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 #[system(for_each)]
-pub fn set_game_style_from_input(
+pub fn menu_screen_input(
     event: &SystemEvent,
     #[resource] game_style: &mut GameStyle,
     #[resource] game_state: &mut GameState
@@ -23,8 +23,23 @@ pub fn set_game_style_from_input(
 }
 
 #[system(for_each)]
-#[filter(component::<Menu>())]
-pub fn set_game_style_texture(
+pub fn game_over_screen_input(
+    event: &SystemEvent,
+    #[resource] game_state: &mut GameState
+) {
+    match event {
+        SystemEvent::KeyboardAction { state, button } => {
+            if button.is_pressed(VirtualKeyCode::Space, &state) {    
+                game_state.transition_to(GameStatus::Playing);
+            }
+        },
+        _ => {}
+    }  
+}
+
+#[system(for_each)]
+#[filter(component::<MenuScreen>())]
+pub fn set_menu_screen_texture(
     entity: &Entity,
     #[resource] game_style: &mut GameStyle,
     buffer: &mut CommandBuffer

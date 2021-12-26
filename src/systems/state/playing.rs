@@ -18,11 +18,12 @@ pub fn transition_state_to_playing(
             add_ball(buffer);
         },
         GameStatus::Starting => {
-            remove_menu(buffer, world);
-            add_arena(buffer);
+            remove_menu_screen(buffer, world);
             add_ball(buffer);
-            add_bat0(buffer);
-            add_bat1(buffer);
+        },
+        GameStatus::Finishing => {
+            remove_game_over_screen(buffer, world);
+            add_ball(buffer);
         }
         _ => {},
     }
@@ -38,9 +39,18 @@ pub fn set_normal_bat_textures(buffer: &mut CommandBuffer, world: &SubWorld) {
         });
 }
 
-pub fn remove_menu(buffer: &mut CommandBuffer, world: &SubWorld) {
+pub fn remove_menu_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
     <Entity>::query()
-        .filter(component::<Menu>())
+        .filter(component::<MenuScreen>())
+        .iter(world)
+        .for_each(|entity| {
+            remove_entity(buffer, *entity);
+        });
+}
+
+pub fn remove_game_over_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
+    <Entity>::query()
+        .filter(component::<GameOverScreen>())
         .iter(world)
         .for_each(|entity| {
             remove_entity(buffer, *entity);

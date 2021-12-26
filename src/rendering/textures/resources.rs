@@ -9,6 +9,10 @@ pub enum TextureResources {
     Impact(u8),
     Effect(u8),
     Menu(u8),
+    Digit0(u8),
+    Digit1(u8),
+    Digit2(u8),
+    Over,
 }
 
 pub fn initialise_texture_cache(textures: &mut TextureCache, screen_renderer: &ScreenRenderer) -> Result<(), TextureError> {
@@ -26,9 +30,19 @@ pub fn initialise_texture_cache(textures: &mut TextureCache, screen_renderer: &S
     textures.insert(screen_renderer, TextureResources::Impact(3), &include_bytes!("../../../images/impact3.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Impact(4), &include_bytes!("../../../images/impact4.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Effect(0), &include_bytes!("../../../images/effect0.png")[..])?;
-    textures.insert(screen_renderer, TextureResources::Effect(0), &include_bytes!("../../../images/effect0.png")[..])?;
+    textures.insert(screen_renderer, TextureResources::Effect(1), &include_bytes!("../../../images/effect1.png")[..])?;
     textures.insert(screen_renderer, TextureResources::Menu(0), &include_bytes!("../../../images/menu0.png")[..])?; 
     textures.insert(screen_renderer, TextureResources::Menu(1), &include_bytes!("../../../images/menu1.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit0(0), &include_bytes!("../../../images/digit00.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit0(1), &include_bytes!("../../../images/digit01.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit0(2), &include_bytes!("../../../images/digit02.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit1(0), &include_bytes!("../../../images/digit10.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit1(1), &include_bytes!("../../../images/digit11.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit1(2), &include_bytes!("../../../images/digit12.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit2(0), &include_bytes!("../../../images/digit20.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit2(1), &include_bytes!("../../../images/digit21.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Digit2(2), &include_bytes!("../../../images/digit22.png")[..])?; 
+    textures.insert(screen_renderer, TextureResources::Over, &include_bytes!("../../../images/over.png")[..])?; 
     Ok(())
 }
 

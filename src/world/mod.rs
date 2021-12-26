@@ -2,13 +2,13 @@ mod player;
 mod ball;
 mod arena;
 mod impact;
-mod menu;
+mod screens;
 
 pub use player::*;
 pub use ball::*;
 pub use arena::*;
 pub use impact::*;
-pub use menu::*;
+pub use screens::*;
 
 use crate::prelude::*;
 

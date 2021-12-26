@@ -6,6 +6,7 @@ pub enum GameStatus {
     Starting,
     Playing,
     Scoring(u8),
+    Finishing,
     Exiting
 }
 

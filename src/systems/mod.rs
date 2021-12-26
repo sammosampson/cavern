@@ -8,7 +8,7 @@ mod animation;
 mod effects;
 mod sound;
 mod world;
-mod style;
+mod screens;
 
 pub use legion::*;
 pub use legion::query::Query;
@@ -26,8 +26,8 @@ pub fn build_start_schedule() -> Schedule {
         .add_system(events::proliferate_system_events_system())
         .flush()
         .add_thread_local(rendering::build_play_render_graph_system())
-        .add_system(style::set_game_style_from_input_system())
-        .add_system(style::set_game_style_texture_system())
+        .add_system(screens::menu_screen_input_system())
+        .add_system(screens::set_menu_screen_texture_system())
         .flush()
         .add_thread_local(rendering::render_system())
         .add_system(sound::play_sound_system())
@@ -90,7 +90,23 @@ pub fn build_score_schedule() -> Schedule {
         .flush()
         .add_thread_local(rendering::render_system())
         .add_system(sound::play_sound_system())
-        .add_thread_local(effects::remove_dead_effects_system())
+        .flush()
+        .add_thread_local(world::remove_entity_system())
+        .add_system(state::exit_if_requested_system())
+        .add_system(events::destroy_system_events_system())
+        .build()
+}
+
+pub fn build_finish_schedule() -> Schedule {
+    Schedule::builder()
+        .add_system(state::transition_state_to_finishing_system())
+        .add_system(events::proliferate_system_events_system())
+        .flush()
+        .add_thread_local(rendering::build_play_render_graph_system())
+        .add_system(screens::game_over_screen_input_system())
+        .flush()
+        .add_thread_local(rendering::render_system())
+        .add_system(sound::play_sound_system())
         .flush()
         .add_thread_local(world::remove_entity_system())
         .add_system(state::exit_if_requested_system())

@@ -12,6 +12,7 @@ pub struct Application {
     start_schedule: Schedule,
     play_schedule: Schedule,
     score_schedule: Schedule,
+    finish_schedule: Schedule,
     event_loop: SystemEventLoop
 }
 
@@ -23,6 +24,7 @@ impl Application {
         let start_schedule = build_start_schedule();
         let play_schedule = build_play_schedule();
         let score_schedule = build_score_schedule();
+        let finish_schedule = build_finish_schedule();
        
         let application = Self {
             world,
@@ -30,6 +32,7 @@ impl Application {
             start_schedule,
             play_schedule,
             score_schedule,
+            finish_schedule,
             event_loop
         };
 
@@ -63,6 +66,7 @@ impl Application {
             GameStatus::Starting => self.start_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Playing => self.play_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Scoring(_) => self.score_schedule.execute(&mut self.world, &mut self.resources),
+            GameStatus::Finishing => self.finish_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Exiting => return false
         };        
         true
@@ -74,6 +78,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let screen_renderer = create_screen_renderer(event_loop)?;
     let texture_cache = create_texture_cache(&screen_renderer)?;
     let item_renderer = create_item_renderer();
+    let player_score = create_player_score();
     let game_timer = create_game_timer();
     let game_state = create_game_state();
     let system_event_producer = create_system_event_producer();
@@ -86,6 +91,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     &mut resources.insert(texture_cache);
     &mut resources.insert(item_renderer);
     &mut resources.insert(game_timer);
+    &mut resources.insert(player_score);
     &mut resources.insert(system_event_producer);
     &mut resources.insert(system_event_channel);
     &mut resources.insert(audio_player);
