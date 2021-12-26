@@ -14,6 +14,7 @@ mod collision;
 mod animation;
 mod effects;
 mod sound;
+mod style;
 
 mod prelude {
     pub use std::io::Cursor;
@@ -38,6 +39,7 @@ mod prelude {
     pub use crate::animation::*;
     pub use crate::effects::*;
     pub use crate::sound::*;
+    pub use crate::style::*;
 
 }
 

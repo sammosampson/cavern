@@ -70,6 +70,7 @@ impl Application {
 }
 
 fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, ApplicationError> {
+    let game_style = create_game_style();
     let screen_renderer = create_screen_renderer(event_loop)?;
     let texture_cache = create_texture_cache(&screen_renderer)?;
     let item_renderer = create_item_renderer();
@@ -80,6 +81,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let audio_player = create_audio_player()?;
         
     let mut resources = Resources::default();
+    &mut resources.insert(game_style);
     &mut resources.insert(screen_renderer);
     &mut resources.insert(texture_cache);
     &mut resources.insert(item_renderer);

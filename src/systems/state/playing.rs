@@ -17,7 +17,8 @@ pub fn transition_state_to_playing(
             set_normal_bat_textures(buffer, world);
             add_ball(buffer);
         },
-        GameStatus::None => {
+        GameStatus::Starting => {
+            remove_menu(buffer, world);
             add_arena(buffer);
             add_ball(buffer);
             add_bat0(buffer);
@@ -34,5 +35,14 @@ pub fn set_normal_bat_textures(buffer: &mut CommandBuffer, world: &SubWorld) {
         .iter(world)
         .for_each(|(entity, bat)|{
             set_normal_bat_texture(buffer, *entity, bat.0);
+        });
+}
+
+pub fn remove_menu(buffer: &mut CommandBuffer, world: &SubWorld) {
+    <Entity>::query()
+        .filter(component::<Menu>())
+        .iter(world)
+        .for_each(|entity| {
+            remove_entity(buffer, *entity);
         });
 }

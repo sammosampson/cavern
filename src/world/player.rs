@@ -20,12 +20,12 @@ impl Deref for Bat {
 }
 
 pub fn set_bat_score_texture(buffer: &mut CommandBuffer, bat_entity: Entity, index: u8) {
-    let texture = if index == 0 { TextureResources::Bat02 } else { TextureResources::Bat12 };
+    let texture = if index == 0 { TextureResources::Bat0(2) } else { TextureResources::Bat1(2) };
     set_texture(buffer, bat_entity, texture);
 }
 
 pub fn set_normal_bat_texture(buffer: &mut CommandBuffer, bat_entity: Entity, index: u8) {
-    let texture = if index == 0 { TextureResources::Bat00 } else { TextureResources::Bat10 };
+    let texture = if index == 0 { TextureResources::Bat0(0) } else { TextureResources::Bat1(0) };
     set_texture(buffer, bat_entity, texture);
 }
 
@@ -39,11 +39,11 @@ fn create_bat_hit_effect_animation(game_timer: &GameTimer, index: u8) -> Animati
         game_timer.total_game_time());
 
     if index == 0 {
-        animation.add_frame(TextureResources::Bat01);
-        animation.add_frame(TextureResources::Bat00);
+        animation.add_frame(TextureResources::Bat0(1));
+        animation.add_frame(TextureResources::Bat0(0));
     } else {        
-        animation.add_frame(TextureResources::Bat11);
-        animation.add_frame(TextureResources::Bat10);
+        animation.add_frame(TextureResources::Bat1(1));
+        animation.add_frame(TextureResources::Bat1(0));
     }
 
     animation
@@ -51,11 +51,11 @@ fn create_bat_hit_effect_animation(game_timer: &GameTimer, index: u8) -> Animati
 
 
 pub fn add_bat0(buffer: &mut CommandBuffer) {
-    add_bat(buffer,0,TextureResources::Bat00,BAT_POSITION_OFFSET,"Player1");
+    add_bat(buffer,0,TextureResources::Bat0(0),BAT_POSITION_OFFSET,"Player1");
 }
 
 pub fn add_bat1(buffer: &mut CommandBuffer) {
-    add_bat(buffer,1,TextureResources::Bat10,SCREEN_WIDTH - BAT_POSITION_OFFSET,"Player2");
+    add_bat(buffer,1,TextureResources::Bat1(0),SCREEN_WIDTH - BAT_POSITION_OFFSET,"Player2");
 }
 
 fn add_bat(buffer: &mut CommandBuffer, index: u8, texture: TextureResources, x: f32, name: &str) {

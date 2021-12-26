@@ -31,7 +31,7 @@ fn create_arena_score_effect_animation(game_timer: &GameTimer, index: u8) -> Ani
         Duration::from_secs(3).as_secs_f32(), 
         game_timer.total_game_time());
 
-    let texture = if index == 0 { TextureResources::Effect0 } else { TextureResources::Effect1 };
+    let texture = if index == 0 { TextureResources::Effect(0) } else { TextureResources::Effect(1) };
     animation.add_frame(texture);
 
     animation

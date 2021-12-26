@@ -22,7 +22,7 @@ pub struct GameState {
 impl GameState {
     fn initial() -> Self {
         Self {
-            status: GameStatus::Playing,
+            status: GameStatus::Starting,
             previous_status: GameStatus::None,
             entered_on: None
         }

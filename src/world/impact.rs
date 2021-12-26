@@ -30,11 +30,11 @@ fn create_impact_effect_animation(game_timer: &GameTimer) -> Animation {
         Duration::from_millis(333).as_secs_f32(), 
         game_timer.total_game_time());
 
-    animation.add_frame(TextureResources::Impact0);
-    animation.add_frame(TextureResources::Impact1);
-    animation.add_frame(TextureResources::Impact2);
-    animation.add_frame(TextureResources::Impact3);
-    animation.add_frame(TextureResources::Impact4);
+    animation.add_frame(TextureResources::Impact(0));
+    animation.add_frame(TextureResources::Impact(1));
+    animation.add_frame(TextureResources::Impact(2));
+    animation.add_frame(TextureResources::Impact(3));
+    animation.add_frame(TextureResources::Impact(4));
 
     animation
 }
