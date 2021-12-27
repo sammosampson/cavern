@@ -39,11 +39,11 @@ impl PlayerScore {
     }
 }
 
-pub fn add_score0(buffer: &mut CommandBuffer) {
+pub fn add_player_one_score(buffer: &mut CommandBuffer) {
     add_score(buffer,TextureResources::Digit1(0), PlayerIndex::Player1, SCREEN_WIDTH - 255.0, "Score1");
 }
 
-pub fn add_score1(buffer: &mut CommandBuffer) {
+pub fn add_player_two_score(buffer: &mut CommandBuffer) {
     add_score(buffer,TextureResources::Digit2(0), PlayerIndex::Player2, 255.0, "Score2");
 }
 

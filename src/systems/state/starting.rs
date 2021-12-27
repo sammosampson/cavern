@@ -13,9 +13,9 @@ pub fn transition_state_to_starting(
     add_menu_screen(buffer);
     add_arena(buffer);
     add_player_one_bat(buffer);
-    add_score0(buffer);
+    add_player_one_score(buffer);
     add_player_two_bat(buffer);
-    add_score1(buffer);
+    add_player_two_score(buffer);
     
     game_state.enter(game_timer.total_game_time());
 }

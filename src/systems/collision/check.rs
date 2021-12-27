@@ -63,7 +63,11 @@ fn ball_distance_to_centre(position: Vector) -> f32 {
 }
 
 fn bat_index(heading: Vector) -> PlayerIndex {
-    if heading.x < 0.0 { PlayerIndex::Player1 } else { PlayerIndex::Player2 }
+    if heading.x < 0.0 {
+        PlayerIndex::Player1
+    } else {
+        PlayerIndex::Player2
+    }
 }
 
 fn get_bat_position(world: &SubWorld, bat_index: PlayerIndex) -> (Entity, Vector) {
