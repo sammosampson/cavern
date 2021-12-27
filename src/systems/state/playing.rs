@@ -26,6 +26,7 @@ pub fn transition_state_to_playing(
         },
         GameStatus::Finishing => {
             score.reset();
+            display_score(score, buffer, world);
             remove_game_over_screen(buffer, world);
             add_ball(buffer);
         }
