@@ -29,6 +29,11 @@ impl PlayerScore {
         self.inner[usize::from(index)] += 1;
     }
 
+    pub fn reset(&mut self) {
+        self.inner[0] = 0;
+        self.inner[1] = 0;
+    }
+
     pub fn get(&self, index: PlayerIndex) -> u8 {
         self.inner[usize::from(index)]
     }
@@ -52,7 +57,7 @@ fn add_score(buffer: &mut CommandBuffer, texture: TextureResources, index: Playe
     ));
 }
 
-pub fn set_win_score_texture(buffer: &mut CommandBuffer, entity: Entity, score: u8, index: PlayerIndex) {
+pub fn set_standard_score_texture(buffer: &mut CommandBuffer, entity: Entity, score: u8, index: PlayerIndex) {
     if index == PlayerIndex::Player1 {
         set_texture(buffer, entity, TextureResources::Digit1(score));
     } else {
@@ -60,26 +65,10 @@ pub fn set_win_score_texture(buffer: &mut CommandBuffer, entity: Entity, score: 
     }
 }
 
-pub fn set_lose_score_animation(buffer: &mut CommandBuffer, entity: Entity, game_timer: &GameTimer, score: u8, index: PlayerIndex) {
-    buffer.add_component(
-        entity, 
-        create_lose_score_animation(game_timer, score, index));
-}
-
-fn create_lose_score_animation(game_timer: &GameTimer, score: u8, index: PlayerIndex) -> Animation {
-    let mut animation = create_animation(
-        Duration::from_secs(3).as_secs_f32(), 
-        game_timer.total_game_time());
-
+pub fn set_lose_score_texture(buffer: &mut CommandBuffer, entity: Entity, score: u8, index: PlayerIndex) {
     if index == PlayerIndex::Player1 {
-        animation.add_frame(TextureResources::Digit0(score));
-        animation.add_frame(TextureResources::Digit1(score));
-    } else {        
-        animation.add_frame(TextureResources::Digit0(score));
-        animation.add_frame(TextureResources::Digit2(score));
+        set_texture(buffer, entity, TextureResources::Digit0(score));
+    } else {
+        set_texture(buffer, entity, TextureResources::Digit0(score));
     }
-
-    animation
 }
-
-

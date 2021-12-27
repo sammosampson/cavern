@@ -25,7 +25,7 @@ pub fn transition_state_to_scored(
                 add_arena_score_effect(buffer, game_timer, index);
                 set_losing_bat_score_texture(buffer, world, index);
                 increment_score(score, index);
-                display_score(index, score, game_timer, buffer, world);
+                display_score(index, score, buffer, world);
             },
             _ => {},
         }
@@ -48,7 +48,6 @@ fn increment_score(score: &mut PlayerScore, index: PlayerIndex) {
 fn display_score(
     index: PlayerIndex,
     player_score: &PlayerScore,
-    game_timer: &GameTimer,
     buffer: &mut CommandBuffer,
     world: &SubWorld
 ) {
@@ -56,10 +55,10 @@ fn display_score(
         .iter(world)
         .for_each(|(entity, board)| {
             if index == **board {
-                set_win_score_texture(buffer, *entity, player_score.get(index), index);
+                set_standard_score_texture(buffer, *entity, player_score.get(index), index);
             } else {
                 let index = index.opposing();
-                set_lose_score_animation(buffer, *entity, game_timer, player_score.get(index), index);
+                set_lose_score_texture(buffer, *entity, player_score.get(index), index);
             }
         });
 }
