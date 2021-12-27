@@ -1,13 +1,9 @@
 use crate::prelude::*;
 
-pub fn add_wall_impact_sound(buffer: &mut CommandBuffer) {
-    buffer.push(create_wall_impact_sound());   
+pub fn add_wall_impact_sounds(buffer: &mut CommandBuffer) {
+    buffer.push(create_sound_components(SoundResources::Bounce(random_number(0..4))));
+    buffer.push(create_sound_components(SoundResources::BounceSynth));   
 }
-
-fn create_wall_impact_sound() -> (WorldEntityId, Sound) {(
-    "WallImpactSound".into(),
-    SoundResources::WallImpact.into()
-)}
 
 pub fn add_impact_effect(buffer: &mut CommandBuffer, game_timer: &GameTimer, position: Position) {
     buffer.push(create_impact_effect(game_timer, position));   

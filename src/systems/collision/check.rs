@@ -11,8 +11,7 @@ const BAT_THRESHOLD: f32 = HALF_SCREEN_WIDTH - BAT_POSITION_OFFSET - HALF_BAT_WI
 #[read_component(Heading)]
 pub fn check_collision(
     buffer: &mut CommandBuffer,
-    world: &mut SubWorld,
-    #[resource] game_state: &mut GameState,
+    world: &mut SubWorld
 ) {
     let balls = get_balls(world);
     
@@ -29,7 +28,7 @@ pub fn check_collision(
     let ball_next_distance_to_centre = ball_distance_to_centre(**next_position);
     
     if ball_next_distance_to_centre >= GOAL_THRESHOLD {
-        game_state.transition_to(GameStatus::Scoring(bat_index));
+        buffer.add_component(*ball, create_goal_collision(bat_index));
         return;
     }
         

@@ -39,6 +39,10 @@ impl PlayerScore {
     }
 }
 
+pub fn add_score_sound(buffer: &mut CommandBuffer) {
+    buffer.push(create_sound_components(SoundResources::ScoreGoal));   
+}
+
 pub fn add_player_one_score(buffer: &mut CommandBuffer) {
     add_score(buffer,TextureResources::Digit1(0), PlayerIndex::Player1, SCREEN_WIDTH - 255.0, "Score1");
 }

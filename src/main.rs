@@ -15,6 +15,7 @@ mod animation;
 mod effects;
 mod sound;
 mod style;
+mod random;
 
 mod prelude {
     pub use std::io::Cursor;
@@ -40,7 +41,7 @@ mod prelude {
     pub use crate::effects::*;
     pub use crate::sound::*;
     pub use crate::style::*;
-
+    pub use crate::random::*;
 }
 
 use prelude::*;

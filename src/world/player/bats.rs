@@ -6,6 +6,32 @@ pub const BAT_WIDTH: f32 = 18.0;
 pub const HALF_BAT_HEIGHT: f32 = BAT_HEIGHT * 0.5;
 pub const HALF_BAT_WIDTH: f32 = BAT_WIDTH * 0.5;
 
+pub fn add_bat_up_sounds(buffer: &mut CommandBuffer) {
+    buffer.push(create_sound_components(SoundResources::Up));   
+}
+
+pub fn add_bat_down_sounds(buffer: &mut CommandBuffer) {
+    buffer.push(create_sound_components(SoundResources::Down));   
+}
+
+pub fn add_bat_hit_sounds(buffer: &mut CommandBuffer, ball_speed: f32) {
+    buffer.push(create_sound_components(SoundResources::Hit(random_number(0..4))));   
+    buffer.push(create_sound_components(get_bat_hit_sound(ball_speed)));   
+}
+
+pub fn get_bat_hit_sound(ball_speed: f32) -> SoundResources {
+    if ball_speed <= SLOW_BALL_VELOCITY {
+       return SoundResources::HitSlow;
+    } 
+    if ball_speed <= MEDIUM_BALL_VELOCITY {
+        return SoundResources::HitMedium;
+    } 
+    if ball_speed <= FAST_BALL_VELOCITY {   
+        return SoundResources::HitFast;
+    }
+    SoundResources::HitVeryFast
+}
+
 #[derive(Debug, Copy, Clone)]
 pub struct Bat(PlayerIndex);
 

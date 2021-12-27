@@ -42,15 +42,33 @@ pub fn set_heading_from_input(
 }
 
 #[system(for_each)]
+pub fn set_bat_movement_sounds(
+    heading: &Heading,
+    buffer: &mut CommandBuffer
+) {
+    let heading = **heading;
+
+    if heading == Vector::down() {
+        add_bat_up_sounds(buffer)
+    } else if heading == Vector::up() {
+        add_bat_down_sounds(buffer)
+    }
+}
+
+
+#[system(for_each)]
 pub fn set_velocity_given_heading(
     maximum_velocity: &MaximumVelocity,
     velocity: &mut Velocity,
     heading: &Heading
 ) {
-    if heading.0 == Vector::default() {
-        velocity.0 = 0.0;
+    let heading = **heading;
+    let maximum_velocity = **maximum_velocity;
+
+    if heading == Vector::default() {
+        **velocity = 0.0;
     } else {
-        velocity.0 = maximum_velocity.0;  
+        **velocity = maximum_velocity;
     }
 }
 
@@ -62,7 +80,11 @@ pub fn apply_velocity_to_position(
     next_position: &mut NextPosition,
     #[resource] game_timer: &GameTimer
 ) {
-    next_position.0 = (heading.0 * velocity.0 * game_timer.last_frame_time()) + position.0
+    let heading = **heading;
+    let velocity = **velocity;
+    let position = **position;
+
+    **next_position = (heading * velocity * game_timer.last_frame_time()) + position
 }
 
 #[system(for_each)]
@@ -73,7 +95,7 @@ pub fn movement(
     #[resource] item_renderer: &mut ItemRenderer
 ) {
     if let Some(item) = item_renderer.find_mut(entity_id) {
-        item.set_centre_position(position.0);
-        position.0 = next_position.0
+        item.set_centre_position(**position);
+        **position = **next_position
     }
 }
