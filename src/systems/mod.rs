@@ -108,6 +108,8 @@ pub fn build_finish_schedule() -> Schedule {
         .add_thread_local(rendering::render_system())
         .add_system(sound::play_sound_system())
         .flush()
+        .add_thread_local(effects::remove_dead_effects_system())
+        .flush()
         .add_thread_local(world::remove_entity_system())
         .add_system(state::exit_if_requested_system())
         .add_system(events::destroy_system_events_system())

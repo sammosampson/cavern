@@ -25,8 +25,8 @@ pub fn set_heading_from_input(
         SystemEvent::KeyboardAction { state, button } => {
             let mut query = <(&mut Heading, &Bat)>::query().filter(component::<Player>());
             for (heading, bat) in query.iter_mut(world) {
-                let up_key = if **bat == 0 { VirtualKeyCode::Q } else  { VirtualKeyCode::Up };
-                let down_key = if **bat == 0 { VirtualKeyCode::A } else  { VirtualKeyCode::Down };
+                let up_key = if **bat == PlayerIndex::Player1 { VirtualKeyCode::Q } else  { VirtualKeyCode::Up };
+                let down_key = if **bat == PlayerIndex::Player1 { VirtualKeyCode::A } else  { VirtualKeyCode::Down };
                 if button.is_pressed(up_key, &state) {    
                     heading.0 = Vector::up(); 
                 }

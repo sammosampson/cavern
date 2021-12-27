@@ -62,11 +62,11 @@ fn ball_distance_to_centre(position: Vector) -> f32 {
     (position.x - HALF_SCREEN_WIDTH).abs() + BALL_RADIUS
 }
 
-fn bat_index(heading: Vector) -> u8 {
-    if heading.x < 0.0 { 0 } else { 1 }
+fn bat_index(heading: Vector) -> PlayerIndex {
+    if heading.x < 0.0 { PlayerIndex::Player1 } else { PlayerIndex::Player2 }
 }
 
-fn get_bat_position(world: &SubWorld, bat_index: u8) -> (Entity, Vector) {
+fn get_bat_position(world: &SubWorld, bat_index: PlayerIndex) -> (Entity, Vector) {
     let bats: Vec<(Entity, Vector)> = <(Entity, &Position, &Bat)>::query()
         .iter(world)
         .filter(|(_, __, bat)| ***bat == bat_index)

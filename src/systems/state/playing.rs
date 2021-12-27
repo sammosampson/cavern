@@ -14,7 +14,7 @@ pub fn transition_state_to_playing(
 
     match game_state.previous_status() {
         GameStatus::Scoring(_) => {
-            set_normal_bat_textures(buffer, world);
+            super::set_normal_bat_textures(buffer, world);
             add_ball(buffer);
         },
         GameStatus::Starting => {
@@ -31,15 +31,7 @@ pub fn transition_state_to_playing(
     game_state.enter(game_timer.total_game_time());
 }
 
-pub fn set_normal_bat_textures(buffer: &mut CommandBuffer, world: &SubWorld) {
-    <(Entity, &Bat)>::query()
-        .iter(world)
-        .for_each(|(entity, bat)|{
-            set_normal_bat_texture(buffer, *entity, bat.0);
-        });
-}
-
-pub fn remove_menu_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
+fn remove_menu_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
     <Entity>::query()
         .filter(component::<MenuScreen>())
         .iter(world)
@@ -48,7 +40,7 @@ pub fn remove_menu_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
         });
 }
 
-pub fn remove_game_over_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
+fn remove_game_over_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
     <Entity>::query()
         .filter(component::<GameOverScreen>())
         .iter(world)

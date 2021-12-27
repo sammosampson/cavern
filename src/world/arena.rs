@@ -12,7 +12,7 @@ pub fn add_arena(buffer: &mut CommandBuffer) {
     ));
 }
 
-pub fn add_arena_score_effect(buffer: &mut CommandBuffer, game_timer: &GameTimer, index: u8) {
+pub fn add_arena_score_effect(buffer: &mut CommandBuffer, game_timer: &GameTimer, index: PlayerIndex) {
     buffer.push((
         create_arena_score_effect_id(index),
         create_arena_score_effect_animation(game_timer, index),
@@ -22,17 +22,16 @@ pub fn add_arena_score_effect(buffer: &mut CommandBuffer, game_timer: &GameTimer
     ));
 }
 
-fn create_arena_score_effect_id(index: u8) -> WorldEntityId {
+fn create_arena_score_effect_id(index: PlayerIndex) -> WorldEntityId {
     format!("ArenaScore{:?}", index).into()
 }
 
-fn create_arena_score_effect_animation(game_timer: &GameTimer, index: u8) -> Animation {
+fn create_arena_score_effect_animation(game_timer: &GameTimer, index: PlayerIndex) -> Animation {
     let mut animation = create_animation(
         Duration::from_secs(3).as_secs_f32(), 
         game_timer.total_game_time());
 
-    let texture = if index == 0 { TextureResources::Effect(0) } else { TextureResources::Effect(1) };
-    animation.add_frame(texture);
+    animation.add_frame(TextureResources::Effect(u8::from(index)));
 
     animation
 }

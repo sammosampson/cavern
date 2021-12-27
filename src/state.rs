@@ -5,7 +5,7 @@ pub enum GameStatus {
     None,
     Starting,
     Playing,
-    Scoring(u8),
+    Scoring(PlayerIndex),
     Finishing,
     Exiting
 }

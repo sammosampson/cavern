@@ -3,6 +3,7 @@ use crate::prelude::*;
 #[system(simple)]
 #[read_component(Ball)]
 #[read_component(Bat)]
+#[read_component(ScoreBoard)]
 pub fn transition_state_to_scored(
     #[resource] game_state: &mut GameState,
     #[resource] game_timer: &mut GameTimer,
@@ -20,10 +21,11 @@ pub fn transition_state_to_scored(
     
         match game_state.previous_status() {
             GameStatus::Playing => {
-                increment_score(score, index);
                 remove_ball(buffer, world);
                 add_arena_score_effect(buffer, game_timer, index);
                 set_losing_bat_score_texture(buffer, world, index);
+                increment_score(score, index);
+                display_score(index, score, game_timer, buffer, world);
             },
             _ => {},
         }
@@ -39,22 +41,41 @@ fn get_next_state(score: &PlayerScore) -> GameStatus {
     GameStatus::Playing
 }
 
-pub fn increment_score(score: &mut PlayerScore, index: u8) {
+fn increment_score(score: &mut PlayerScore, index: PlayerIndex) {
     score.increment(index)
+}
+
+fn display_score(
+    index: PlayerIndex,
+    player_score: &PlayerScore,
+    game_timer: &GameTimer,
+    buffer: &mut CommandBuffer,
+    world: &SubWorld
+) {
+    <(Entity, &ScoreBoard)>::query()
+        .iter(world)
+        .for_each(|(entity, board)| {
+            if index == **board {
+                set_win_score_texture(buffer, *entity, player_score.get(index), index);
+            } else {
+                let index = index.opposing();
+                set_lose_score_animation(buffer, *entity, game_timer, player_score.get(index), index);
+            }
+        });
 }
 
 fn remove_ball(buffer: &mut CommandBuffer, world: &SubWorld) {
     <Entity>::query()
         .filter(component::<Ball>())
         .iter(world)
-        .for_each(|entity| buffer.add_component(*entity, Remove));
+        .for_each(|entity| remove_entity(buffer, *entity));
 }
 
-fn set_losing_bat_score_texture(buffer: &mut CommandBuffer, world: &SubWorld, goal_index: u8) {
+fn set_losing_bat_score_texture(buffer: &mut CommandBuffer, world: &SubWorld, index: PlayerIndex) {
     <(Entity, &Bat)>::query()
         .iter(world)
-        .filter(|(_, bat)| bat.0 == goal_index)
+        .filter(|(_, bat)| ***bat == index)
         .for_each(|(entity, _)|{
-            set_bat_score_texture(buffer, *entity, goal_index);
+            set_bat_score_texture(buffer, *entity, index);
         });
 }
