@@ -42,3 +42,6 @@ pub fn centre_screen() -> Vector {
     Vector::new(HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT)
 }
 
+pub fn play_music(buffer: &mut CommandBuffer) {
+    buffer.push(create_music_components(MusicResources::Theme));   
+}

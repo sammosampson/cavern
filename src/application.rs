@@ -4,11 +4,10 @@ use crate::prelude::*;
 pub enum ApplicationError {
     RendererError(RendererError),
     TextureError(TextureError),
-    SoundError(SoundError)
 }
 pub struct Application {
-    pub world: World, 
-    pub resources: Resources,
+    world: World, 
+    resources: Resources,
     start_schedule: Schedule,
     play_schedule: Schedule,
     score_schedule: Schedule,
@@ -83,7 +82,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let game_state = create_game_state();
     let system_event_producer = create_system_event_producer();
     let system_event_channel = create_system_event_channel();
-    let audio_player = create_audio_player()?;
+    let sound_cache = create_sound_cache();
         
     let mut resources = Resources::default();
     &mut resources.insert(game_style);
@@ -94,7 +93,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     &mut resources.insert(player_score);
     &mut resources.insert(system_event_producer);
     &mut resources.insert(system_event_channel);
-    &mut resources.insert(audio_player);
+    &mut resources.insert(sound_cache);
     &mut resources.insert(game_state);
     Ok(resources)
 }
@@ -116,8 +115,8 @@ fn create_screen_renderer(event_loop: &SystemEventLoop) -> Result<ScreenRenderer
     )
 }
 
-fn create_audio_player() -> Result<AudioPlayer, ApplicationError> {
-    Ok(
-        AudioPlayer::new().map_err(|error| ApplicationError::SoundError(error))?
-    )
+fn create_sound_cache() -> SoundSourceCache {
+    let mut sounds = SoundSourceCache::default();
+    initialise_sound_cache(&mut sounds);
+    sounds
 }

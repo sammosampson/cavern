@@ -13,11 +13,12 @@ mod input;
 mod collision;
 mod animation;
 mod effects;
-mod sound;
+mod audio;
 mod style;
 mod random;
 
 mod prelude {
+    pub use std::sync::Arc;
     pub use std::io::Cursor;
     pub use std::ops::*;
     pub use std::collections::*;
@@ -39,7 +40,7 @@ mod prelude {
     pub use crate::collision::*;
     pub use crate::animation::*;
     pub use crate::effects::*;
-    pub use crate::sound::*;
+    pub use crate::audio::*;
     pub use crate::style::*;
     pub use crate::random::*;
 }
@@ -48,6 +49,6 @@ use prelude::*;
 
 fn main() {
     Application::build()
-    .expect("Application did not build")
-    .run();
+        .expect("Application did not build")
+        .run();
 }
