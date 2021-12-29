@@ -37,6 +37,19 @@ impl Vector {
     }
 }
 
+impl Vector {
+    pub fn normalise(&self) -> Vector {
+        let len = self.length();
+        Self::new(self.x / len, self.y / len)
+    }
+
+    pub fn length(&self) -> f32 {
+        let len = (self.x * self.x) + (self.y * self.y);
+        len.sqrt()
+    } 
+
+}
+
 impl Default for Vector {
     fn default() -> Self { 
         Self { x: 0.0, y: 0.0}

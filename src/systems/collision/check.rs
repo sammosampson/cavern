@@ -38,7 +38,7 @@ pub fn check_collision(
         let (bat_top_extent, bat_bottom_extent) = vertical_bat_extents(bat_position);
         
         if ball_top_extent <= bat_top_extent && ball_bottom_extent >= bat_bottom_extent {
-            buffer.add_component(*ball, create_bat_collision(bat_entity, bat_index));
+            buffer.add_component(*ball, create_bat_collision(bat_entity, bat_index, bat_position));
         }
         return;
     } 

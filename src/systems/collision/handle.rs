@@ -27,6 +27,7 @@ pub fn handle_bat_collision(
 ) {
     add_bat_hit_sounds(buffer, **maximum_velocity);
     invert_ball_horizontal_heading(heading);
+    apply_ball_spin_from_bat_position(heading, **position, collision.bat_position);
     increase_ball_speed(maximum_velocity);
     add_impact_effect(buffer, game_timer, *position);
     set_bat_hit_effect(buffer, game_timer, collision.bat, collision.index);
@@ -41,6 +42,14 @@ pub fn handle_goal_collision(
 ) {
     add_score_sound(buffer);
     transtion_to_scoring_state(game_state, collision);
+}
+
+fn apply_ball_spin_from_bat_position(heading: &mut Heading, ball_position: Vector, bat_position: Vector) {
+    let y_difference = (ball_position.y - bat_position.y) / BAT_HEIGHT;
+    let mut heading_vec = **heading;
+    heading_vec.y += y_difference;
+    heading_vec.normalise();
+    **heading = heading_vec;
 }
     
 fn increase_ball_speed(maximum_velocity: &mut MaximumVelocity) {
