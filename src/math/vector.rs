@@ -13,41 +13,6 @@ impl Vector {
             y
         }
     }
-
-    pub fn up() -> Self {
-        Self {
-            x: 0.0,
-            y: 1.0
-        }
-    }
-
-    pub fn down() -> Self {
-        Self {
-            x: 0.0,
-            y: -1.0
-        }
-    }
-
-    pub fn to_x_inverted(&self) -> Vector {
-        Self::new(-self.x, self.y)
-    }
-
-    pub fn to_y_inverted(&self) -> Vector {
-        Self::new(self.x, -self.y)
-    }
-}
-
-impl Vector {
-    pub fn normalise(&self) -> Vector {
-        let len = self.length();
-        Self::new(self.x / len, self.y / len)
-    }
-
-    pub fn length(&self) -> f32 {
-        let len = (self.x * self.x) + (self.y * self.y);
-        len.sqrt()
-    } 
-
 }
 
 impl Default for Vector {
@@ -94,15 +59,6 @@ impl From<Dimensions> for Vector {
         Self {
             x: from.width,
             y: from.height
-        }
-    }
-}
-
-impl From<Angle> for Vector {
-    fn from(from: Angle) -> Self {
-        Self {
-            x: from.0.cos(),
-            y: from.0.sin()
         }
     }
 }

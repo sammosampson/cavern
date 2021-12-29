@@ -9,7 +9,8 @@ pub fn transition_state_to_starting(
     if game_state.has_entered() {
         return;
     }
-    add_menu_screen(buffer);
+    add_level_background(buffer);
+    add_title_screen(buffer);
     
     game_state.enter(game_timer.total_game_time());
 }

@@ -1,5 +1,3 @@
-use crate::prelude::*;
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GameStatus {
     None,
@@ -50,17 +48,5 @@ impl GameState {
     pub fn enter(&mut self, time: f32) {
         println!("entering state at {:?}", time);
         self.entered_on = Some(time);
-    }
-
-    
-    pub fn entered_on(&self) -> f32 {
-        if let Some(entered_on) = self.entered_on {
-            return entered_on
-        }
-        0.0
-    }
-
-    pub fn time_in_state(&self, timer: &GameTimer) -> f32 {
-        timer.total_game_time() - self.entered_on()
     }
 }

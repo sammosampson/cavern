@@ -1,15 +1,13 @@
 mod matrices;
 mod vector;
-mod angles;
 
 pub use std::f64::consts;
 pub use matrices::*;
 pub use vector::*;
-pub use angles::*;
 
 use crate::prelude::*;
 
-pub const PI:f32 = consts::PI as f32;
+//pub const PI:f32 = consts::PI as f32;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Dimensions {

@@ -19,6 +19,14 @@ pub enum TextureError {
 #[derive(Debug, Clone)]
 pub struct Texture(pub String);
 
+impl Texture {
+    pub fn png(name: &str) -> Self {
+        let mut name = name.to_owned();
+        name.push_str(".png");
+        Self(name)
+    }
+}        
+
 impl Deref for Texture {
     type Target = str;
 
