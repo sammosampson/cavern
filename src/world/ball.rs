@@ -1,12 +1,12 @@
 use crate::prelude::*;
 
-pub const BASE_BALL_VELOCITY: f32 = 150.0;
-pub const SLOW_BALL_VELOCITY: f32 = 300.0;
-pub const MEDIUM_BALL_VELOCITY: f32 = 380.0;
-pub const FAST_BALL_VELOCITY: f32 = 440.0;
-pub const BALL_VELOCITY_INCREMENT: f32 = 10.0;
+pub const BASE_BALL_VELOCITY: f32 = 180.0;
+pub const SLOW_BALL_VELOCITY: f32 = 200.0;
+pub const MEDIUM_BALL_VELOCITY: f32 = 220.0;
+pub const FAST_BALL_VELOCITY: f32 = 240.0;
+pub const BALL_VELOCITY_INCREMENT: f32 = 5.0;
 pub const BALL_DIAMETER: f32 = 14.0;
-pub const BALL_RADIUS: f32 = BALL_DIAMETER* 0.5;
+pub const BALL_RADIUS: f32 = BALL_DIAMETER * 0.5;
 
 pub struct Ball;
 

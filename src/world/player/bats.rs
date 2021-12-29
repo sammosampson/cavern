@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 pub const BAT_POSITION_OFFSET: f32 = 40.0;
-pub const BAT_HEIGHT: f32 = 100.0;
+pub const BAT_HEIGHT: f32 = 128.0;
 pub const BAT_WIDTH: f32 = 18.0;
 pub const HALF_BAT_HEIGHT: f32 = BAT_HEIGHT * 0.5;
 pub const HALF_BAT_WIDTH: f32 = BAT_WIDTH * 0.5;
