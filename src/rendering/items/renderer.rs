@@ -16,13 +16,13 @@ impl ItemRenderer {
         screen_renderer: &ScreenRenderer,
         textures: &TextureCache,
         entity_id: &WorldEntityId,
-        texture: TextureResources,
+        texture: &str,
         centre_position: Vector,
         layer: u8
     ) -> Result<(), RendererError> {
         self.render_items.insert(
             entity_id.clone(), 
-            ItemRendererItem::new(screen_renderer, textures, entity_id.clone(), texture, centre_position, layer)?
+            ItemRendererItem::new(screen_renderer, textures, entity_id.clone(), texture.to_string(), centre_position, layer)?
         );
         Ok(())
     }

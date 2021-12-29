@@ -33,11 +33,14 @@ pub use glium:: {
         event::Event
     }
 };
+
 pub use display::*;
 pub use shaders::*;
 pub use items::*;
 pub use textures::*;
 pub use screen::*;
+
+use crate::prelude::*;
 
 #[derive(Debug)]
 pub enum RendererError {
@@ -54,5 +57,17 @@ pub const HALF_SCREEN_WIDTH: f32 = SCREEN_WIDTH * 0.5;
 pub const SCREEN_HEIGHT: f32 = 480.0;
 pub const HALF_SCREEN_HEIGHT: f32 = SCREEN_HEIGHT * 0.5;
 
+pub fn centre_screen() -> Vector {
+    Vector::new(HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT)
+}
+
 #[derive(Copy, Clone, Debug)]
 pub struct Layer(pub u8);
+
+impl Deref for Layer {
+    type Target = u8;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}

@@ -1,13 +1,5 @@
-mod player;
-mod ball;
-mod arena;
-mod impact;
 mod screens;
 
-pub use player::*;
-pub use ball::*;
-pub use arena::*;
-pub use impact::*;
 pub use screens::*;
 
 use crate::prelude::*;
@@ -32,16 +24,9 @@ impl From<String> for WorldEntityId {
         Self(name)
     }
 }
+
 pub struct Remove;
 
 pub fn remove_entity(buffer: &mut CommandBuffer, entity: Entity) {
     buffer.add_component(entity, Remove)
-}
-
-pub fn centre_screen() -> Vector {
-    Vector::new(HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT)
-}
-
-pub fn play_music(buffer: &mut CommandBuffer) {
-    buffer.push(create_music_components(MusicResources::Theme));   
 }

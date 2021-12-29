@@ -1,9 +1,5 @@
 use std::time::Duration;
-
-use crate::prelude::*;
-
-#[derive(Default, Clone, Copy, Debug, PartialEq)]
-pub struct ElapsedTime(pub f32);
+use std::time::Instant;
 
 pub fn create_game_timer() -> GameTimer {
     GameTimer::new()

@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 #[system(for_each)]
 #[filter(!component::<RenderGraphSet>())]
-pub fn build_play_render_graph(
+pub fn build_render_graph(
     entity: &Entity, 
     entity_id: &WorldEntityId, 
     texture: &Texture,
@@ -13,9 +13,10 @@ pub fn build_play_render_graph(
     #[resource] item_renderer: &mut ItemRenderer,
     buffer: &mut CommandBuffer,
 ) {
+    let texture = &**texture;
     match item_renderer.find_mut(entity_id) {
         Some(item) => {
-            item.set_texture(texture.0);
+            item.set_texture(texture);
         }
         None => {
             item_renderer
@@ -23,9 +24,9 @@ pub fn build_play_render_graph(
                     screen_renderer, 
                     textures,
                     entity_id, 
-                    texture.0, 
-                    position.0, 
-                    layer.0
+                    texture, 
+                    **position, 
+                    **layer
                 )
                 .expect(&format!("Could not add item to render {:?}", entity_id));
     

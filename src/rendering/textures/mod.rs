@@ -16,10 +16,18 @@ pub enum TextureError {
     TextureCreationError
 }
 
-#[derive(Debug, Clone, Copy)]
-pub struct Texture(pub TextureResources);
+#[derive(Debug, Clone)]
+pub struct Texture(pub String);
 
-pub fn set_texture(buffer: &mut CommandBuffer, entity: Entity, texture: TextureResources) {
+impl Deref for Texture {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+pub fn set_texture(buffer: &mut CommandBuffer, entity: Entity, texture: String) {
     buffer.add_component(entity, Texture(texture));
     buffer.remove_component::<RenderGraphSet>(entity)
 }

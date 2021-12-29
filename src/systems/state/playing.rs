@@ -1,12 +1,11 @@
 use crate::prelude::*;
 
 #[system(simple)]
-#[read_component(Bat)]
-#[read_component(ScoreBoard)]
+#[read_component(MenuScreen)]
+#[read_component(GameOverScreen)]
 pub fn transition_state_to_playing(
     #[resource] game_state: &mut GameState,
     #[resource] game_timer: &mut GameTimer,
-    #[resource] score: &mut PlayerScore,
     buffer: &mut CommandBuffer,
     world: &SubWorld
 ) {
@@ -15,20 +14,11 @@ pub fn transition_state_to_playing(
     }
 
     match game_state.previous_status() {
-        GameStatus::Scoring(_) => {
-            display_score(score, buffer, world);
-            super::set_normal_bat_textures(buffer, world);
-            add_ball(buffer);
-        },
         GameStatus::Starting => {
             remove_menu_screen(buffer, world);
-            add_ball(buffer);
         },
         GameStatus::Finishing => {
-            score.reset();
-            display_score(score, buffer, world);
             remove_game_over_screen(buffer, world);
-            add_ball(buffer);
         }
         _ => {},
     }
@@ -51,17 +41,5 @@ fn remove_game_over_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
         .iter(world)
         .for_each(|entity| {
             remove_entity(buffer, *entity);
-        });
-}
-
-fn display_score(
-    player_score: &PlayerScore,
-    buffer: &mut CommandBuffer,
-    world: &SubWorld
-) {
-    <(Entity, &ScoreBoard)>::query()
-        .iter(world)
-        .for_each(|(entity, board)| {
-            set_standard_score_texture(buffer, *entity, player_score.get(**board), **board);
         });
 }

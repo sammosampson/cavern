@@ -5,7 +5,7 @@ pub struct ItemRendererItem {
     layer: u8,
     shader_program: Program,
     model_matrix: Matrix4x4,
-    texture: TextureResources,
+    texture: String,
     vertex_buffer: VertexBuffer<VertexInput>,
     indices: NoIndices,
 }
@@ -15,13 +15,13 @@ impl ItemRendererItem {
         screen_renderer: &ScreenRenderer,
         textures: &TextureCache,
         entity_id: WorldEntityId,
-        texture: TextureResources,
+        texture: String,
         centre_position: Vector,
         layer: u8
     ) -> Result<Self, RendererError> {
         println!("Rendering {:?}", entity_id);
 
-        let dimensions = get_sampler_texture(textures, texture)?.dimensions();
+        let dimensions = get_sampler_texture(textures, &texture)?.dimensions();
 
         Ok(
             Self {
@@ -46,7 +46,7 @@ impl ItemRendererItem {
         let uniforms = uniform! {
             model: self.model_matrix.into_column_major(),
             projection: orthographic_view_matrix(0.0, SCREEN_WIDTH, 0.0, SCREEN_HEIGHT, -1.0, 1.0).into_column_major(), 
-            image: get_sampler_texture(textures, self.texture)?.sampler_wrap_clamp_minify_nearest_magnify_nearest()
+            image: get_sampler_texture(textures, &self.texture)?.sampler_wrap_clamp_minify_nearest_magnify_nearest()
         };
 
         self.draw_to_target(target, &params, &uniforms)?;
@@ -58,8 +58,8 @@ impl ItemRendererItem {
         self.model_matrix = calculate_model_matrix(position, self.dimensions);
     }
 
-    pub fn set_texture(&mut self, texture: TextureResources) {
-        self.texture = texture;
+    pub fn set_texture(&mut self, texture: &str) {
+        self.texture = texture.to_string();
     }
 
     fn draw_to_target<U:Uniforms>(&self, target: &mut Frame, params: &DrawParameters, uniforms: &U) -> Result<(), RendererError> {
@@ -74,9 +74,9 @@ impl ItemRendererItem {
     }
 }
 
-fn get_sampler_texture(textures: &TextureCache, texture: TextureResources) -> Result<&SamplerTexture, RendererError> {
+fn get_sampler_texture<'a>(textures: &'a TextureCache, texture: &'a str) -> Result<&'a SamplerTexture, RendererError> {
     let dimensions = textures
-        .get(&texture)
+        .get(texture)
         .ok_or(RendererError::TextureLoadError)?;
 
     Ok(dimensions)

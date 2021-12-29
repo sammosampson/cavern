@@ -1,5 +1,5 @@
 [package]
-name = "boing"
+name = "cavern"
 version = "0.1.0"
 authors = ["Chris Sampson <sammosampson@gmail.com>"]
 edition = "2018"

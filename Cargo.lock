@@ -135,19 +135,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0d8c1fef690941d3e7788d328517591fecc684c084084702d6ff1641e993699a"
 
 [[package]]
-name = "boing"
-version = "0.1.0"
-dependencies = [
- "glium",
- "image",
- "legion",
- "rand",
- "rodio",
- "shrev",
- "smallvec",
-]
-
-[[package]]
 name = "bumpalo"
 version = "3.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -179,6 +166,19 @@ checksum = "0b036167e76041694579972c28cf4877b4f92da222560ddb49008937b6a6727c"
 dependencies = [
  "log",
  "nix 0.18.0",
+]
+
+[[package]]
+name = "cavern"
+version = "0.1.0"
+dependencies = [
+ "glium",
+ "image",
+ "legion",
+ "rand",
+ "rodio",
+ "shrev",
+ "smallvec",
 ]
 
 [[package]]
