@@ -5,6 +5,7 @@ pub const BAT_HEIGHT: f32 = 100.0;
 pub const BAT_WIDTH: f32 = 18.0;
 pub const HALF_BAT_HEIGHT: f32 = BAT_HEIGHT * 0.5;
 pub const HALF_BAT_WIDTH: f32 = BAT_WIDTH * 0.5;
+pub const MAXIMUM_BAT_VELOCITY: f32 = 200.0;
 
 pub fn add_bat_up_sounds(buffer: &mut CommandBuffer) {
     buffer.push(create_sound_components(SoundResources::Up));   
@@ -87,9 +88,8 @@ fn add_bat(buffer: &mut CommandBuffer, index: PlayerIndex, texture: TextureResou
         Texture(texture), 
         Layer(2), 
         Position(Vector::new(x, HALF_SCREEN_HEIGHT)), 
-        MaximumVelocity(140.0),
+        MaximumVelocity(MAXIMUM_BAT_VELOCITY),
         Heading::default(),
-        WorldEntityId::from(name),
-        Player
+        WorldEntityId::from(name)
     ));
 }

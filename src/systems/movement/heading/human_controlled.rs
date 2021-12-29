@@ -1,9 +1,7 @@
-
 use crate::prelude::*;
 
 #[system(for_each)]
 #[read_component(Bat)]
-#[read_component(Heading)]
 #[write_component(Heading)]
 pub fn set_player_one_heading_from_input(
     event: &SystemEvent,
@@ -20,7 +18,6 @@ pub fn set_player_one_heading_from_input(
 
 #[system(for_each)]
 #[read_component(Bat)]
-#[read_component(Heading)]
 #[write_component(Heading)]
 pub fn set_player_two_heading_from_input(
     event: &SystemEvent,
@@ -55,7 +52,6 @@ fn set_player_heading_from_input(
 
 fn set_bat_heading(world: &mut SubWorld, index: PlayerIndex, to_set: Vector) {
     let (heading, _) = <(&mut Heading, &Bat)>::query()
-        .filter(component::<Player>())                
         .iter_mut(world)
         .filter(|(_, bat)| ***bat == index)
         .nth(0)

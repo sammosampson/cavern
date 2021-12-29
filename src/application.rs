@@ -9,7 +9,8 @@ pub struct Application {
     world: World, 
     resources: Resources,
     start_schedule: Schedule,
-    play_schedule: Schedule,
+    one_player_play_schedule: Schedule,
+    two_player_play_schedule: Schedule,
     score_schedule: Schedule,
     finish_schedule: Schedule,
     event_loop: SystemEventLoop
@@ -21,7 +22,8 @@ impl Application {
         let world = build_world();
         let resources = build_resources(&event_loop)?;
         let start_schedule = build_start_schedule();
-        let play_schedule = build_play_schedule();
+        let one_player_play_schedule = build_one_player_play_schedule();
+        let two_player_play_schedule = build_two_player_play_schedule();
         let score_schedule = build_score_schedule();
         let finish_schedule = build_finish_schedule();
        
@@ -29,7 +31,8 @@ impl Application {
             world,
             resources, 
             start_schedule,
-            play_schedule,
+            one_player_play_schedule,
+            two_player_play_schedule,
             score_schedule,
             finish_schedule,
             event_loop
@@ -60,14 +63,22 @@ impl Application {
 
     fn execute_schedule(&mut self) -> bool {
         let current_state = self.resources.get::<GameState>().unwrap().status();
+        let current_game_style = *self.resources.get::<GameStyle>().unwrap();
+        
         match current_state {
             GameStatus::None => {},
             GameStatus::Starting => self.start_schedule.execute(&mut self.world, &mut self.resources),
-            GameStatus::Playing => self.play_schedule.execute(&mut self.world, &mut self.resources),
+            GameStatus::Playing => {
+                match current_game_style {
+                    GameStyle::OnePlayer => self.one_player_play_schedule.execute(&mut self.world, &mut self.resources),
+                    GameStyle::TwoPlayer => self.two_player_play_schedule.execute(&mut self.world, &mut self.resources),
+                }
+            },
             GameStatus::Scoring(_) => self.score_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Finishing => self.finish_schedule.execute(&mut self.world, &mut self.resources),
             GameStatus::Exiting => return false
-        };        
+        };
+
         true
     }
 }

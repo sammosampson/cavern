@@ -5,8 +5,6 @@ pub use score::*;
 pub use bats::*;
 
 
-pub struct Player;
-
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum PlayerIndex {
     Player1,

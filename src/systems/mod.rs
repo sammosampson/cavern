@@ -13,6 +13,7 @@ mod screens;
 pub use legion::*;
 pub use legion::query::Query;
 pub use legion::systems::CommandBuffer;
+use legion::systems::ParallelRunnable;
 pub use legion::world::SubWorld;
 
 pub fn build_world() -> World {
@@ -39,7 +40,15 @@ pub fn build_start_schedule() -> Schedule {
         .build()
 }
 
-pub fn build_play_schedule() -> Schedule {
+pub fn build_one_player_play_schedule() -> Schedule {
+    build_play_schedule(movement::calculate_computer_player_two_heading_system())
+}
+
+pub fn build_two_player_play_schedule() -> Schedule {
+    build_play_schedule(movement::set_player_two_heading_from_input_system())
+}
+
+fn build_play_schedule<T: 'static + ParallelRunnable>(player_two_control_system: T) -> Schedule {
     Schedule::builder()
         .add_system(state::transition_state_to_playing_system())
         .add_system(events::proliferate_system_events_system())
@@ -48,7 +57,7 @@ pub fn build_play_schedule() -> Schedule {
         .add_system(time::calculate_elapsed_time_system())
         .add_thread_local(rendering::build_play_render_graph_system())
         .add_system(movement::set_player_one_heading_from_input_system())
-        .add_system(movement::set_player_two_heading_from_input_system())
+        .add_system(player_two_control_system)
         .add_system(collision::contain_bat_in_bounds_system())
         .add_system(movement::set_velocity_given_heading_system())
         .add_system(movement::set_bat_movement_sounds_system())
