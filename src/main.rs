@@ -10,11 +10,15 @@ mod time;
 mod math;
 mod geometry;
 mod movement;
+mod animation;
+mod files;
 
 mod prelude {
     pub use std::io::Cursor;
     pub use std::ops::*;
     pub use std::collections::*;
+    pub use smallvec::SmallVec;
+    pub use std::time::Duration;
     pub use crate::application::*;
     pub use crate::input::*;
     pub use crate::events::*;
@@ -26,6 +30,8 @@ mod prelude {
     pub use crate::math::*;
     pub use crate::geometry::*;
     pub use crate::movement::*;
+    pub use crate::animation::*;
+    pub use crate::files::*;
 }
 
 use prelude::*;

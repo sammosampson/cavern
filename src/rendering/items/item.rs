@@ -19,9 +19,9 @@ impl ItemRendererItem {
         centre_position: Vector,
         layer: u8
     ) -> Result<Self, RendererError> {
-        println!("Rendering {:?}", entity_id);
-
+        
         let dimensions = get_sampler_texture(textures, &texture)?.dimensions();
+        println!("Rendering {:?} sized {:?}", entity_id, dimensions);
 
         Ok(
             Self {

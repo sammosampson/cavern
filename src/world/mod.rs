@@ -1,8 +1,10 @@
 mod levels;
+mod titles;
 mod screens;
 
 pub use screens::*;
 pub use levels::*;
+pub use titles::*;
 
 use crate::prelude::*;
 

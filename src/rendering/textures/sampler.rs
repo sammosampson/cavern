@@ -9,6 +9,9 @@ impl SamplerTexture {
     pub fn new(display: &Display, image_data: &[u8]) -> Result<Self, TextureError> {
         let image = load_rgba_image(image_data)?;
         let dimensions = image.dimensions();
+
+        println!("making sampler texture size: {:?}", dimensions);
+        
         let image = convert_to_raw_image(image, dimensions);
         let texture = create_srgb_texture(display, image)?;
         

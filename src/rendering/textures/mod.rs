@@ -13,7 +13,14 @@ use crate::prelude::*;
 #[derive(Debug)]
 pub enum TextureError {
     ImageError,
-    TextureCreationError
+    TextureCreationError,
+    TextureFileReadError(FileError)
+}
+
+impl From<FileError> for TextureError {
+    fn from(error: FileError) -> Self {
+        Self::TextureFileReadError(error)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -35,7 +42,7 @@ impl Deref for Texture {
     }
 }
 
-pub fn set_texture(buffer: &mut CommandBuffer, entity: Entity, texture: String) {
-    buffer.add_component(entity, Texture(texture));
+pub fn set_texture(buffer: &mut CommandBuffer, entity: Entity, texture: Texture) {
+    buffer.add_component(entity, texture);
     buffer.remove_component::<RenderGraphSet>(entity)
 }

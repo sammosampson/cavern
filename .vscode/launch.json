@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'boing'",
+            "name": "Debug executable 'cavern'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=boing",
-                    "--package=boing"
+                    "--bin=cavern",
+                    "--package=cavern"
                 ],
                 "filter": {
-                    "name": "boing",
+                    "name": "cavern",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'boing'",
+            "name": "Debug unit tests in executable 'cavern'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=boing",
-                    "--package=boing"
+                    "--bin=cavern",
+                    "--package=cavern"
                 ],
                 "filter": {
-                    "name": "boing",
+                    "name": "cavern",
                     "kind": "bin"
                 }
             },
