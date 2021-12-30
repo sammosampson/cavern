@@ -3,7 +3,6 @@ use crate::prelude::*;
 
 pub fn add_level_background(buffer: &mut CommandBuffer) {
     buffer.push((
-        MenuScreen,
         Texture::png("bg0"), 
         Layer(0), 
         Position(centre_screen()), 

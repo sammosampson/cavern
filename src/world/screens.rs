@@ -1,10 +1,10 @@
 use crate::prelude::*;
 
-pub struct MenuScreen;
+pub struct MenuScreenItem;
 
 pub fn add_title_screen(buffer: &mut CommandBuffer) {
     buffer.push((
-        MenuScreen,
+        MenuScreenItem,
         Texture::png("title"), 
         Layer(3), 
         Position(centre_screen()), 

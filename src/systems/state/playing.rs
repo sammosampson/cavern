@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 #[system(simple)]
-#[read_component(MenuScreen)]
+#[read_component(MenuScreenItem)]
 #[read_component(GameOverScreen)]
 pub fn transition_state_to_playing(
     #[resource] game_state: &mut GameState,
@@ -15,7 +15,7 @@ pub fn transition_state_to_playing(
 
     match game_state.previous_status() {
         GameStatus::Starting => {
-            remove_menu_screen(buffer, world);
+            remove_menu_screen_items(buffer, world);
         },
         GameStatus::Finishing => {
             remove_game_over_screen(buffer, world);
@@ -26,9 +26,9 @@ pub fn transition_state_to_playing(
     game_state.enter(game_timer.total_game_time());
 }
 
-fn remove_menu_screen(buffer: &mut CommandBuffer, world: &SubWorld) {
+fn remove_menu_screen_items(buffer: &mut CommandBuffer, world: &SubWorld) {
     <Entity>::query()
-        .filter(component::<MenuScreen>())
+        .filter(component::<MenuScreenItem>())
         .iter(world)
         .for_each(|entity| {
             remove_entity(buffer, *entity);

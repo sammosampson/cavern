@@ -5,6 +5,7 @@ mod world;
 mod time;
 mod animation;
 mod movement;
+mod input;
 
 pub use legion::*;
 pub use legion::query::Query;
@@ -23,6 +24,7 @@ pub fn build_start_schedule() -> Schedule {
         .flush()    
         .add_system(time::game_time_system())    
         .add_thread_local(rendering::build_render_graph_system())
+        .add_system(input::title_screen_input_system())
         .flush()    
         .add_thread_local(movement::set_position_system())
         .flush()
@@ -44,6 +46,7 @@ pub fn build_play_schedule() -> Schedule {
         .flush()
         .add_system(time::game_time_system())    
         .add_thread_local(rendering::build_render_graph_system())
+        .add_system(input::play_input_system())
         .flush()    
         .add_thread_local(movement::set_position_system())
         .flush()
@@ -64,6 +67,7 @@ pub fn build_finish_schedule() -> Schedule {
         .add_system(events::proliferate_system_events_system())
         .flush()
         .add_thread_local(rendering::build_render_graph_system())
+        .add_system(input::title_screen_input_system())
         .flush()    
         .add_thread_local(rendering::render_system())
         .flush()
