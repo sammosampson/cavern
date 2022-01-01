@@ -6,6 +6,7 @@ mod time;
 mod animation;
 mod movement;
 mod input;
+mod audio;
 
 pub use legion::*;
 pub use legion::query::Query;
@@ -32,6 +33,8 @@ pub fn build_start_schedule() -> Schedule {
         .add_thread_local(animation::render_animation_frame_system())
         .flush()
         .add_thread_local(rendering::render_system())
+        .add_system(audio::play_music_system())
+        .add_system(audio::play_sound_system())
         .flush()
         .add_thread_local(world::remove_entity_system())
         .add_system(state::exit_if_requested_system())
@@ -54,6 +57,8 @@ pub fn build_play_schedule() -> Schedule {
         .add_thread_local(animation::render_animation_frame_system())
         .flush()
         .add_thread_local(rendering::render_system())
+        .add_system(audio::play_music_system())
+        .add_system(audio::play_sound_system())
         .flush()
         .add_thread_local(world::remove_entity_system())
         .add_system(state::exit_if_requested_system())
@@ -70,6 +75,8 @@ pub fn build_finish_schedule() -> Schedule {
         .add_system(input::title_screen_input_system())
         .flush()    
         .add_thread_local(rendering::render_system())
+        .add_system(audio::play_music_system())
+        .add_system(audio::play_sound_system())
         .flush()
         .add_thread_local(world::remove_entity_system())
         .add_system(state::exit_if_requested_system())

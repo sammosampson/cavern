@@ -4,7 +4,15 @@ use crate::prelude::*;
 pub enum ApplicationError {
     RendererError(RendererError),
     TextureError(TextureError),
+    AudioError(AudioError),
 }
+
+impl From<AudioError> for ApplicationError {
+    fn from(error: AudioError) -> Self {
+        Self::AudioError(error)
+    }
+}
+
 pub struct Application {
     world: World, 
     resources: Resources,
@@ -78,6 +86,9 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let game_state = create_game_state();
     let system_event_producer = create_system_event_producer();
     let system_event_channel = create_system_event_channel();
+    let audio = create_audio_player();
+    let sound_cache = create_sound_cache()?;
+    let music_cache = create_music_cache()?;
         
     let mut resources = Resources::default();
     &mut resources.insert(screen_renderer);
@@ -87,6 +98,9 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     &mut resources.insert(system_event_producer);
     &mut resources.insert(system_event_channel);
     &mut resources.insert(game_state);
+    &mut resources.insert(audio);
+    &mut resources.insert(sound_cache);
+    &mut resources.insert(music_cache);
     Ok(resources)
 }
 
@@ -99,10 +113,21 @@ pub fn create_texture_cache(screen_renderer: &ScreenRenderer) -> Result<TextureC
     Ok(textures)
 }
 
-
 fn create_screen_renderer(event_loop: &SystemEventLoop) -> Result<ScreenRenderer, ApplicationError> {
     Ok(
         ScreenRenderer::new(&event_loop.get_loop())
             .map_err(|error| ApplicationError::RendererError(error))?
     )
+}
+
+fn create_sound_cache() -> Result<SoundSourceCache, ApplicationError> {
+    let mut sounds = SoundSourceCache::default();
+    initialise_sound_cache(&mut sounds)?;
+    Ok(sounds)
+}
+
+fn create_music_cache() -> Result<MusicSourceCache, ApplicationError> {
+    let mut music = MusicSourceCache::default();
+    initialise_music_cache(&mut music)?;
+    Ok(music)
 }

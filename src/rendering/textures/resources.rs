@@ -8,11 +8,11 @@ pub struct TextureCache {
 impl TextureCache {
     fn insert(
         &mut self, screen_renderer: &ScreenRenderer,
-        texture: String,
+        name: String,
         data: &[u8]
     ) -> Result<(), TextureError> {
-        println!("making sampler named: {:?}", texture);
-        self.inner.insert(texture, SamplerTexture::new(&screen_renderer.display, data)?);
+        println!("making sampler named: {:?}", name);
+        self.inner.insert(name, SamplerTexture::new(&screen_renderer.display, data)?);
         Ok(())
     }
 

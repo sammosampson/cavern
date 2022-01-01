@@ -10,6 +10,7 @@ pub fn transition_state_to_finishing(
         return;
     }
 
+    add_player_die_sound(buffer);
     add_game_over_screen(buffer);
     
     game_state.enter(game_timer.total_game_time());

@@ -1,6 +1,7 @@
 
 mod application;
 mod input;
+mod audio;
 mod events;
 mod systems;
 mod rendering;
@@ -21,6 +22,7 @@ mod prelude {
     pub use std::time::Duration;
     pub use crate::application::*;
     pub use crate::input::*;
+    pub use crate::audio::*;
     pub use crate::events::*;
     pub use crate::systems::*;
     pub use crate::rendering::*;

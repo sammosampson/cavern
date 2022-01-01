@@ -10,6 +10,7 @@ pub fn transition_state_to_starting(
         return;
     }
     
+    play_music(buffer);
     add_level_background(buffer);
     add_title_screen(buffer);
     add_press_space_title(buffer, game_timer);

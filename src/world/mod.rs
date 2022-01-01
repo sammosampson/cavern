@@ -34,3 +34,11 @@ pub struct Remove;
 pub fn remove_entity(buffer: &mut CommandBuffer, entity: Entity) {
     buffer.add_component(entity, Remove)
 }
+
+pub fn play_music(buffer: &mut CommandBuffer) {
+    buffer.push(create_music_components("theme"));   
+}
+
+pub fn add_player_die_sound(buffer: &mut CommandBuffer) {
+    buffer.push(create_sound_components("die0"));   
+}
