@@ -26,6 +26,9 @@ impl From<FileError> for TextureError {
 #[derive(Debug, Clone)]
 pub struct Texture(pub String);
 
+#[derive(Debug)]
+pub struct Instanced;
+
 impl Texture {
     pub fn png(name: &str) -> Self {
         let mut name = name.to_owned();
@@ -44,5 +47,4 @@ impl Deref for Texture {
 
 pub fn set_texture(buffer: &mut CommandBuffer, entity: Entity, texture: Texture) {
     buffer.add_component(entity, texture);
-    buffer.remove_component::<RenderGraphSet>(entity)
 }

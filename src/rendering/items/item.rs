@@ -1,6 +1,8 @@
 use crate::prelude::*;
 
+
 pub struct ItemRendererItem {
+    entity_id: WorldEntityId,
     dimensions: Dimensions,
     layer: u8,
     shader_program: Program,
@@ -15,21 +17,21 @@ impl ItemRendererItem {
         screen_renderer: &ScreenRenderer,
         textures: &TextureCache,
         entity_id: WorldEntityId,
-        texture: String,
+        texture: &str,
         centre_position: Vector,
         layer: u8
     ) -> Result<Self, RendererError> {
         
         let dimensions = get_sampler_texture(textures, &texture)?.dimensions();
-        println!("Rendering {:?} sized {:?}", entity_id, dimensions);
-        let centre_position = Vector::new(centre_position.x, centre_position.y - SCREEN_HEIGHT);
+        let centre_position = Vector::new(centre_position.x, centre_position.y);
         Ok(
             Self {
+                entity_id,
                 dimensions,
                 layer,
                 shader_program: create_render_item_shader_program(&screen_renderer)?,
                 model_matrix: calculate_model_matrix(centre_position, dimensions),
-                texture,
+                texture: texture.to_string(),
                 vertex_buffer: build_unit_quad_vertex_buffer(&screen_renderer)?,
                 indices: create_triangle_list_indices(),
             }
@@ -41,6 +43,7 @@ impl ItemRendererItem {
     }
     
     pub fn render(&self, target: &mut Frame, textures: &TextureCache) -> Result<(), RendererError> {
+        println!("Rendering {:?} sized {:?}", self.entity_id, self.dimensions);
         let params = create_render_item_draw_parameters();
         
         let uniforms = uniform! {
@@ -52,14 +55,6 @@ impl ItemRendererItem {
         self.draw_to_target(target, &params, &uniforms)?;
 
         Ok(())
-    }
-
-    pub fn set_centre_position(&mut self, position: Vector) {
-        self.model_matrix = calculate_model_matrix(position, self.dimensions);
-    }
-
-    pub fn set_texture(&mut self, texture: &str) {
-        self.texture = texture.to_string();
     }
 
     fn draw_to_target<U:Uniforms>(&self, target: &mut Frame, params: &DrawParameters, uniforms: &U) -> Result<(), RendererError> {
