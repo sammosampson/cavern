@@ -26,13 +26,13 @@ impl AudioPlayer {
     }
 
     pub fn play_sound(&mut self, resources: &SoundSourceCache, resource: &str, volume: f32) -> Result<(), AudioError> {
-        let source = resources.get(resource).unwrap();
+        let source = resources.get(resource).ok_or(AudioError::SoundResourceNotFoundError)?;
         println!("playing sound {:?}", resource);
         self.play_audio(source, volume, false)
     }
 
     pub fn play_music(&mut self, resources: &MusicSourceCache, resource: &str, volume: f32) -> Result<(), AudioError> {
-        let source = resources.get(resource).unwrap();
+        let source = resources.get(resource).ok_or(AudioError::MusicResourceNotFoundError)?;
         println!("playing music {:?}", resource);
         self.play_audio(source, volume, true)
     }

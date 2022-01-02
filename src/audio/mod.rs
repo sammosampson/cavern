@@ -27,13 +27,15 @@ pub enum AudioEvent {
 
 #[derive(Debug)]
 pub enum AudioError {
-    MusicFileReadError(FileError),
-    PlayAudioError
+    AudioFileReadError(FileError),
+    PlayAudioError,
+    SoundResourceNotFoundError,
+    MusicResourceNotFoundError
 }
 
 impl From<FileError> for AudioError {
     fn from(error: FileError) -> Self {
-        Self::MusicFileReadError(error)
+        Self::AudioFileReadError(error)
     }
 }
 

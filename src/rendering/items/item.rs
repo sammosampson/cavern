@@ -22,7 +22,7 @@ impl ItemRendererItem {
         
         let dimensions = get_sampler_texture(textures, &texture)?.dimensions();
         println!("Rendering {:?} sized {:?}", entity_id, dimensions);
-
+        let centre_position = Vector::new(centre_position.x, centre_position.y - SCREEN_HEIGHT);
         Ok(
             Self {
                 dimensions,
