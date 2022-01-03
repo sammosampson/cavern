@@ -26,9 +26,6 @@ impl From<FileError> for TextureError {
 #[derive(Debug, Clone)]
 pub struct Texture(pub String);
 
-#[derive(Debug)]
-pub struct Instanced;
-
 impl Texture {
     pub fn png(name: &str) -> Self {
         let mut name = name.to_owned();

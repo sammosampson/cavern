@@ -1,49 +1,64 @@
+use glium::vertex::PerInstance;
+
 use crate::prelude::*;
 
 
-pub struct ItemRendererItem {
-    entity_id: WorldEntityId,
+pub struct RenderItem {
+    pub entity_id: WorldEntityId,
+    pub layer: u8,
+    pub texture: String,
+    pub centre_position: Vector
+}
+
+impl From<(&WorldEntityId, &Texture, &Position, &Layer)> for RenderItem {
+    fn from(from: (&WorldEntityId, &Texture, &Position, &Layer)) -> Self {
+        let (id, texture, position, layer) = from;
+        Self {
+            entity_id: id.clone(),
+            layer: **layer,
+            texture: (**texture).to_string(),
+            centre_position: **position
+        }
+    }
+}
+
+pub struct InstanceRenderer {
     dimensions: Dimensions,
-    layer: u8,
     shader_program: Program,
     model_matrix: Matrix4x4,
     texture: String,
     vertex_buffer: VertexBuffer<VertexInput>,
     indices: NoIndices,
+    instances: Vec<InstanceInput>
 }
 
-impl ItemRendererItem {
+impl InstanceRenderer {
     pub fn new(
         screen_renderer: &ScreenRenderer,
         textures: &TextureCache,
-        entity_id: WorldEntityId,
         texture: &str,
-        centre_position: Vector,
-        layer: u8
     ) -> Result<Self, RendererError> {
         
         let dimensions = get_sampler_texture(textures, &texture)?.dimensions();
-        let centre_position = Vector::new(centre_position.x, centre_position.y);
         Ok(
             Self {
-                entity_id,
                 dimensions,
-                layer,
                 shader_program: create_render_item_shader_program(&screen_renderer)?,
-                model_matrix: calculate_model_matrix(centre_position, dimensions),
+                model_matrix: calculate_model_matrix(dimensions),
                 texture: texture.to_string(),
                 vertex_buffer: build_unit_quad_vertex_buffer(&screen_renderer)?,
                 indices: create_triangle_list_indices(),
+                instances: create_dynamic_vertex_buffer(&screen_renderer, instances)?
             }
         )
     }
 
-    pub fn layer(&self) -> u8 {
-        self.layer
+    pub fn add_instance(&mut self, item: &RenderItem) {
+        println!("Adding instance for {:?} sized {:?}", item.entity_id, self.dimensions);
+        self.instances.push(InstanceInput::from(item.centre_position));
     }
     
     pub fn render(&self, target: &mut Frame, textures: &TextureCache) -> Result<(), RendererError> {
-        println!("Rendering {:?} sized {:?}", self.entity_id, self.dimensions);
         let params = create_render_item_draw_parameters();
         
         let uniforms = uniform! {
@@ -60,12 +75,16 @@ impl ItemRendererItem {
     fn draw_to_target<U:Uniforms>(&self, target: &mut Frame, params: &DrawParameters, uniforms: &U) -> Result<(), RendererError> {
         target
             .draw(
-                &self.vertex_buffer, 
+                (&self.vertex_buffer, &self.get_instances()?), 
                 &self.indices, 
                 &self.shader_program, 
                 uniforms, 
                 &params)
             .map_err(|_|RendererError::DrawError)
+    }
+
+    fn get_instances(&self) -> Result<PerInstance<'_>, RendererError> {
+        Ok(buffer.per_instance().unwrap())
     }
 }
 
@@ -77,11 +96,10 @@ fn get_sampler_texture<'a>(textures: &'a TextureCache, texture: &'a str) -> Resu
     Ok(dimensions)
 }
 
-fn calculate_model_matrix(centre_position: Vector, dimensions: Dimensions) -> Matrix4x4 {
+fn calculate_model_matrix(dimensions: Dimensions) -> Matrix4x4 {
     let centre_offset = Vector::from(dimensions) * -0.5;
 
     translation_matrix(centre_offset) 
-        * translation_matrix(centre_position) 
         * scale_matrix(dimensions)
 }
 
@@ -105,6 +123,13 @@ fn create_render_item_shader_program(screen_renderer: &ScreenRenderer) -> Result
 fn create_vertex_buffer(screen_renderer: &ScreenRenderer, vertices: &Vec<VertexInput>) -> Result<VertexBuffer<VertexInput>, RendererError> {    
     Ok(
         VertexBuffer::persistent(&screen_renderer.display, vertices)
+            .map_err(|_|RendererError::BufferCreationError)?
+    )
+}
+
+fn create_dynamic_vertex_buffer(screen_renderer: &ScreenRenderer, vertices: &Vec<InstanceInput>) -> Result<VertexBuffer<InstanceInput>, RendererError> {
+    Ok(
+        VertexBuffer::dynamic(&screen_renderer.display, vertices)
             .map_err(|_|RendererError::BufferCreationError)?
     )
 }
