@@ -11,23 +11,16 @@ impl ScreenRenderer {
         })
     }
 
-    pub fn render(&mut self, renderers: &Vec<InstanceRenderer>, textures: &TextureCache) -> Result<(), RendererError> {
+    pub fn render(&mut self, renderers: &InstanceRenderers, textures: &TextureCache) -> Result<(), RendererError> {
         let mut target = self.create_draw_target();        
         clear_target_color_and_depth(&mut target);
-        self.render_items(renderers, textures, &mut target)?;
+        renderers.render(textures, &mut target)?;
         complete_target_draw(target)?;
         Ok(())
     }
 
     fn create_draw_target(&self) -> Frame {
         self.display.draw()
-    }
-
-    fn render_items(&self, renderers: &Vec<InstanceRenderer>, textures: &TextureCache, target: &mut Frame) -> Result<(), RendererError> {
-        for renderer in renderers {
-            renderer.render(target, textures)?;
-        }
-        Ok(())
     }
 }
 

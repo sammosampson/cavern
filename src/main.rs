@@ -20,6 +20,7 @@ mod prelude {
     pub use std::collections::*;
     pub use smallvec::SmallVec;
     pub use std::time::Duration;
+    pub use itertools::Itertools;
     pub use crate::application::*;
     pub use crate::input::*;
     pub use crate::audio::*;

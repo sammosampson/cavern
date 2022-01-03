@@ -4,7 +4,6 @@ mod events;
 mod world;
 mod time;
 mod animation;
-mod movement;
 mod input;
 mod audio;
 
@@ -26,7 +25,6 @@ pub fn build_start_schedule() -> Schedule {
         .add_system(time::game_time_system())    
         .add_system(input::title_screen_input_system())
         .flush()    
-        .add_thread_local(movement::set_position_system())
         .flush()
         .add_thread_local(animation::render_first_animation_frame_system())
         .add_thread_local(animation::render_animation_frame_system())
@@ -49,7 +47,6 @@ pub fn build_play_schedule() -> Schedule {
         .add_system(time::game_time_system())    
         .add_system(input::play_input_system())
         .flush()    
-        .add_thread_local(movement::set_position_system())
         .flush()
         .add_thread_local(animation::render_first_animation_frame_system())
         .add_thread_local(animation::render_animation_frame_system())

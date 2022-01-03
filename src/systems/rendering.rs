@@ -10,35 +10,30 @@ pub fn render(
     #[resource] screen_renderer: &mut ScreenRenderer,
     #[resource] textures: &TextureCache
 ) {
-    let mut to_render: Vec<_> = <(&WorldEntityId, &Texture, &Position, &Layer)>::query()
+    let renderers = create_renderers(
+        screen_renderer,
+        textures,
+        get_render_items(world));
+    
+    render_items(screen_renderer, textures, &renderers);
+}
+
+fn get_render_items(world: &mut SubWorld) -> Vec<RenderItem> {
+    let to_render: Vec<RenderItem> = <(&WorldEntityId, &Texture, &Position, &Layer)>::query()
         .iter(world)
         .map(|item| RenderItem::from(item))
         .collect();
 
-    to_render.sort_by(| item_a, item_b | 
-        item_a
-            .layer.cmp(&item_b.layer)
-            .then(item_a.texture.cmp(&item_b.texture)));
-    
-    let mut renderers = vec!();
-    let mut instances = vec!();
-    let mut last_texture = "".to_string();
+    to_render
+}
 
-    for item in to_render {
-        if last_texture != item.texture {
-            last_texture = item.texture.clone(); 
-        }
+fn create_renderers(screen_renderer: &ScreenRenderer, textures: &TextureCache, to_render: Vec<RenderItem>) -> InstanceRenderers {    
+    InstanceRenderers::new(screen_renderer, textures, to_render)
+        .expect("cannot create instance renderers")
+}
 
-        renderers.last_mut().unwrap().add_instance(&item);
-    }
-    
+fn render_items(screen_renderer: &mut ScreenRenderer, textures: &TextureCache, renderers: &InstanceRenderers) {
     screen_renderer
         .render(&renderers, textures)
         .expect("Could not render");
 }
-
-/*
-   let renderer = InstanceRenderer::new(screen_renderer, textures, &item.texture)
-                .expect("Could not create renderer");
-            renderers.push(renderer);
-          */

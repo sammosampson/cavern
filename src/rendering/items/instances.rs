@@ -1,35 +1,64 @@
-use glium::vertex::PerInstance;
-
 use crate::prelude::*;
 
-
-pub struct RenderItem {
-    pub entity_id: WorldEntityId,
-    pub layer: u8,
-    pub texture: String,
-    pub centre_position: Vector
+pub struct InstanceRenderers {
+    inner: Vec<InstanceRenderer>
 }
 
-impl From<(&WorldEntityId, &Texture, &Position, &Layer)> for RenderItem {
-    fn from(from: (&WorldEntityId, &Texture, &Position, &Layer)) -> Self {
-        let (id, texture, position, layer) = from;
-        Self {
-            entity_id: id.clone(),
-            layer: **layer,
-            texture: (**texture).to_string(),
-            centre_position: **position
+impl InstanceRenderers {
+    pub fn new(screen_renderer: &ScreenRenderer, textures: &TextureCache, to_render: Vec<RenderItem>) -> Result<Self, RendererError> {    
+        let mut inner = create_inner_renderers(screen_renderer, textures,to_render)?;
+        sort_renderers(&mut inner);
+        let renderers = Self { inner };
+        Ok(renderers)
+    }
+
+    pub fn render(&self, textures: &TextureCache, target: &mut Frame) -> Result<(), RendererError> {
+        for renderer in &self.inner {
+            renderer.render(target, textures)?;
         }
+        Ok(())
     }
 }
 
+fn create_inner_renderers(
+    screen_renderer: &ScreenRenderer,
+    textures: &TextureCache,
+    to_render: Vec<RenderItem>
+) -> Result<Vec<InstanceRenderer>, RendererError> {
+    let to_render = to_render
+        .into_iter()
+        .group_by(|render_item| (render_item.texture.clone(), render_item.layer));
+        
+    let mut renderers = vec!();
+
+    for ((texture, layer), grouped_items) in &to_render {
+        let items: Vec<RenderItem> = grouped_items.collect();
+        let instances = convert_render_items_to_instance_inputs(items);
+        renderers.push(InstanceRenderer::new(screen_renderer, textures, &texture, instances, layer)?);
+    }
+
+    Ok(renderers)
+}
+
+fn convert_render_items_to_instance_inputs(render_items: Vec<RenderItem>) -> Vec<InstanceInput> {
+    render_items
+        .into_iter()
+        .map(|item| InstanceInput::from(item.centre_position))
+        .collect()
+}
+
+fn sort_renderers(renderers: &mut Vec<InstanceRenderer>) {
+    renderers.sort_by(| renderer_a, renderer_b | renderer_a.layer().cmp(&renderer_b.layer()));
+}
+
 pub struct InstanceRenderer {
-    dimensions: Dimensions,
     shader_program: Program,
     model_matrix: Matrix4x4,
     texture: String,
     vertex_buffer: VertexBuffer<VertexInput>,
     indices: NoIndices,
-    instances: Vec<InstanceInput>
+    layer: u8,
+    instances: VertexBuffer<InstanceInput>
 }
 
 impl InstanceRenderer {
@@ -37,27 +66,28 @@ impl InstanceRenderer {
         screen_renderer: &ScreenRenderer,
         textures: &TextureCache,
         texture: &str,
+        instances: Vec<InstanceInput>,
+        layer: u8
     ) -> Result<Self, RendererError> {
         
         let dimensions = get_sampler_texture(textures, &texture)?.dimensions();
         Ok(
             Self {
-                dimensions,
                 shader_program: create_render_item_shader_program(&screen_renderer)?,
-                model_matrix: calculate_model_matrix(dimensions),
+                model_matrix: translation_matrix(Vector::from(dimensions) * -0.5) * scale_matrix(dimensions),
                 texture: texture.to_string(),
                 vertex_buffer: build_unit_quad_vertex_buffer(&screen_renderer)?,
                 indices: create_triangle_list_indices(),
-                instances: create_dynamic_vertex_buffer(&screen_renderer, instances)?
+                layer,
+                instances: create_dynamic_vertex_buffer(&screen_renderer,&instances)?
             }
         )
     }
 
-    pub fn add_instance(&mut self, item: &RenderItem) {
-        println!("Adding instance for {:?} sized {:?}", item.entity_id, self.dimensions);
-        self.instances.push(InstanceInput::from(item.centre_position));
+    pub fn layer(&self) -> u8 {
+        self.layer
     }
-    
+
     pub fn render(&self, target: &mut Frame, textures: &TextureCache) -> Result<(), RendererError> {
         let params = create_render_item_draw_parameters();
         
@@ -75,16 +105,12 @@ impl InstanceRenderer {
     fn draw_to_target<U:Uniforms>(&self, target: &mut Frame, params: &DrawParameters, uniforms: &U) -> Result<(), RendererError> {
         target
             .draw(
-                (&self.vertex_buffer, &self.get_instances()?), 
+                (&self.vertex_buffer, self.instances.per_instance().unwrap()), 
                 &self.indices, 
                 &self.shader_program, 
                 uniforms, 
                 &params)
             .map_err(|_|RendererError::DrawError)
-    }
-
-    fn get_instances(&self) -> Result<PerInstance<'_>, RendererError> {
-        Ok(buffer.per_instance().unwrap())
     }
 }
 
@@ -94,13 +120,6 @@ fn get_sampler_texture<'a>(textures: &'a TextureCache, texture: &'a str) -> Resu
         .ok_or(RendererError::TextureLoadError)?;
 
     Ok(dimensions)
-}
-
-fn calculate_model_matrix(dimensions: Dimensions) -> Matrix4x4 {
-    let centre_offset = Vector::from(dimensions) * -0.5;
-
-    translation_matrix(centre_offset) 
-        * scale_matrix(dimensions)
 }
 
 fn build_unit_quad_vertex_buffer(screen_renderer: &ScreenRenderer) -> Result<VertexBuffer<VertexInput>, RendererError>{        
@@ -136,11 +155,6 @@ fn create_dynamic_vertex_buffer(screen_renderer: &ScreenRenderer, vertices: &Vec
 
 fn create_render_item_draw_parameters<'a>() -> DrawParameters<'a> {
     DrawParameters {
-        /*depth: glium::Depth {
-            test: glium::draw_parameters::DepthTest::IfLessOrEqual,
-            write: true,
-            ..Default::default()
-        },*/
         blend: Blend::alpha_blending(),
         .. Default::default()
     }
