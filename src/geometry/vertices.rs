@@ -15,7 +15,7 @@ pub struct InstanceInput {
 impl From<Vector> for InstanceInput {
     fn from(from: Vector) -> Self {
         Self {
-            world_position: [from.x, from.y]
+            world_position: [from.x, SCREEN_HEIGHT - from.y]
         }
     }
 }

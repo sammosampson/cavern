@@ -5,7 +5,7 @@ pub fn add_press_space_title(buffer: &mut CommandBuffer, game_timer: &GameTimer)
     buffer.push((
         create_press_space_title_animation(game_timer), 
         Layer(3), 
-        Position(Vector::new(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 280.0)), 
+        Position(Vector::new(HALF_SCREEN_WIDTH, 280.0)), 
         WorldEntityId::from("PressSpace"),
         MenuScreenItem
     ));

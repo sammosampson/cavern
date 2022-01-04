@@ -15,7 +15,8 @@ pub fn transition_state_to_playing(
 
     match game_state.previous_status() {
         GameStatus::Starting => {
-            draw_level(buffer, 0);
+            let level = load_level(0.into());
+            draw_level(buffer, &level);
             remove_menu_screen_items(buffer, world);
         },
         GameStatus::Finishing => {
