@@ -17,6 +17,7 @@ pub fn transition_state_to_playing(
         GameStatus::Starting => {
             let level = load_level(0.into());
             draw_level(buffer, &level);
+            add_player(buffer);
             remove_menu_screen_items(buffer, world);
         },
         GameStatus::Finishing => {

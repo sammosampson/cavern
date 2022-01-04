@@ -1,3 +1,4 @@
+mod player;
 mod levels;
 mod titles;
 mod screens;
@@ -5,6 +6,7 @@ mod screens;
 pub use screens::*;
 pub use levels::*;
 pub use titles::*;
+pub use player::*;
 
 use crate::prelude::*;
 
