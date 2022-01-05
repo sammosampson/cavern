@@ -7,7 +7,9 @@ fn add_level_background_block(buffer: &mut CommandBuffer, position: Vector) {
     buffer.push((
         Texture::png("block0"), 
         Layer(1), 
-        Position(position), 
+        Position(position),
+        CollisionBox::from(Dimensions::from(GRID_BLOCK_SIZE)),
+        StaticRigidBody,
         WorldEntityId::from(format!("Block{:?}{:?}", position.x, position.y))
     ));
 }

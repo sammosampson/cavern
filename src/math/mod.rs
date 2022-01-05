@@ -8,6 +8,7 @@ pub use vector::*;
 use crate::prelude::*;
 
 //pub const PI:f32 = consts::PI as f32;
+pub const INFINITY: f32 = f32::INFINITY;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Dimensions {
@@ -24,6 +25,12 @@ impl From<(u32, u32)> for Dimensions {
     }
 }
 
+impl From<f32> for Dimensions {
+    fn from(from: f32) -> Self {
+        Self { width: from, height: from }
+    }
+}
+
 impl Mul<f32> for Dimensions {
     type Output = Self;
 
@@ -33,4 +40,18 @@ impl Mul<f32> for Dimensions {
             height: self.height * rhs,
         }
     }
+}
+
+pub fn min(left: f32, right: f32) -> f32 {
+    if left < right {
+        return left;
+    }
+    right
+}
+
+pub fn max(left: f32, right: f32) -> f32 {
+    if left > right {
+        return left;
+    }
+    right
 }

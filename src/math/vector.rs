@@ -13,20 +13,6 @@ impl Vector {
             y
         }
     }
-
-    pub fn left() -> Self {
-        Self {
-            x: -1.0,
-            y: 0.0
-        }
-    }
-
-    pub fn right() -> Self {
-        Self {
-            x: 1.0,
-            y: 0.0
-        }
-    }
 }
 
 impl Default for Vector {
