@@ -5,6 +5,7 @@ mod audio;
 mod events;
 mod systems;
 mod rendering;
+mod physics;
 mod world;
 mod state;
 mod time;
@@ -27,6 +28,7 @@ mod prelude {
     pub use crate::events::*;
     pub use crate::systems::*;
     pub use crate::rendering::*;
+    pub use crate::physics::*;
     pub use crate::world::*;
     pub use crate::state::*;
     pub use crate::time::*;

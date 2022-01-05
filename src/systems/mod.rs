@@ -6,6 +6,7 @@ mod time;
 mod animation;
 mod input;
 mod audio;
+mod physics;
 
 pub use legion::*;
 pub use legion::query::Query;
@@ -24,7 +25,6 @@ pub fn build_start_schedule() -> Schedule {
         .flush()    
         .add_system(time::game_time_system())    
         .add_system(input::title_screen_input_system())
-        .flush()    
         .flush()
         .add_thread_local(animation::render_first_animation_frame_system())
         .add_thread_local(animation::render_animation_frame_system())
@@ -42,11 +42,19 @@ pub fn build_start_schedule() -> Schedule {
 pub fn build_play_schedule() -> Schedule {
     Schedule::builder()
         .add_system(state::transition_state_to_playing_system())
+        .flush()
         .add_system(events::proliferate_system_events_system())
+        .add_system(physics::initialise_movement_system())
         .flush()
         .add_system(time::game_time_system())    
-        .add_system(input::play_input_system())
-        .flush()    
+        .add_system(world::set_player_direction_from_input_system())
+        .flush()
+        .add_system(physics::set_heading_from_direction_system())
+        .add_system(physics::reset_heading_with_no_direction_system())
+        .add_system(physics::set_velocity_given_heading_system())
+        .add_system(physics::apply_velocity_to_position_system())
+        .flush()
+        .add_thread_local(physics::set_position_system())
         .flush()
         .add_thread_local(animation::render_first_animation_frame_system())
         .add_thread_local(animation::render_animation_frame_system())

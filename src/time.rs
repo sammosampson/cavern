@@ -20,6 +20,10 @@ impl GameTimer {
         }
     }
 
+    pub fn last_frame_time(&self) -> f32 {
+        self.last_frame_time.as_secs_f32()
+    }
+
     pub fn total_game_time(&self) -> f32 {
         self.total_game_time.as_secs_f32()
     }
