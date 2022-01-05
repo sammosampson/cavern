@@ -48,7 +48,7 @@ impl AABB {
         let mut exit = Vector::default(); 
 
         if velocity.x == 0.0 { 
-            entry.x = INFINITY; 
+            entry.x = -INFINITY; 
             exit.x = INFINITY; 
         } else { 
             entry.x = inv_entry.x / velocity.x; 
@@ -56,7 +56,7 @@ impl AABB {
         } 
 
         if velocity.y == 0.0 { 
-            entry.y = INFINITY; 
+            entry.y = -INFINITY; 
             exit.y = INFINITY; 
         } else { 
             entry.y = inv_entry.y / velocity.y; 
@@ -96,4 +96,60 @@ impl From<(Vector, Dimensions)> for AABB {
     fn from(from: (Vector, Dimensions)) -> Self {
         Self{ position: from.0, dimensions: from.1 }
     }
+}
+
+#[test]
+fn it_collides_horizontally() {
+    let sut = AABB::from((Vector::new(100.0, 100.0), Dimensions::from(64.0)));
+    let overlaps = AABB::from((Vector::new(165.0, 100.0), Dimensions::from(16.0)));
+    
+    let (time, normal) = sut.sweep_check_collision(
+        &overlaps, 
+        &Vector::new(10.0, 0.0)
+    );
+
+    assert!(normal.x == -1.0 && normal.y == 0.0, "normal = {:?}", normal);
+    assert!(time == 0.1, "time = {}", time);
+}
+
+#[test]
+fn it_collides_vertically() {
+    let sut = AABB::from((Vector::new(100.0, 100.0), Dimensions::from(64.0)));
+    let overlaps = AABB::from((Vector::new(100.0, 165.0), Dimensions::from(16.0)));
+    
+    let (time, normal) = sut.sweep_check_collision(
+        &overlaps, 
+        &Vector::new(0.0, 10.0)
+    );
+
+    assert!(normal.x == 0.0 && normal.y == -1.0, "normal = {:?}", normal);
+    assert!(time == 0.1, "time = {}", time);
+}
+
+#[test]
+fn it_collides_horizontally_and_vertically() {
+    let sut = AABB::from((Vector::new(100.0, 100.0), Dimensions::from(64.0)));
+    let overlaps = AABB::from((Vector::new(165.0, 165.0), Dimensions::from(16.0)));
+    
+    let (time, normal) = sut.sweep_check_collision(
+        &overlaps, 
+        &Vector::new(10.0, 10.0)
+    );
+
+    assert!(normal.x == 0.0 && normal.y == -1.0, "normal = {:?}", normal);
+    assert!(time == 0.1, "time = {}", time);
+}
+
+#[test]
+fn it_does_not_collide() {
+    let sut = AABB::from((Vector::new(100.0, 90.0), Dimensions::from(64.0)));
+    let overlaps = AABB::from((Vector::new(100.0, 165.0), Dimensions::from(16.0)));
+    
+    let (time, normal) = sut.sweep_check_collision(
+        &overlaps, 
+        &Vector::new(0.0, 10.0)
+    );
+
+    assert!(normal.x == 0.0 && normal.y == 0.0, "normal = {:?}", normal);
+    assert!(time == 1.0, "time = {}", time);
 }
