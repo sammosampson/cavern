@@ -20,12 +20,10 @@ impl ScreenRenderer {
         })
     }
 
-    pub fn render(&mut self, renderers: &InstanceRenderers, textures: &TextureCache) -> Result<(), RendererError> {
+    pub fn start_render(&mut self) -> Frame {
         let mut target = self.create_draw_target();        
         clear_target_color_and_depth(&mut target);
-        renderers.render(textures, &mut target)?;
-        complete_target_draw(target)?;
-        Ok(())
+        target
     }
 
     fn create_draw_target(&self) -> Frame {
@@ -41,7 +39,7 @@ fn clear_target_color_and_depth(target: &mut Frame) {
     target.clear_color_and_depth((0.3, 0.3, 0.5, 1.0), 1.0);
 }
 
-fn complete_target_draw(target: Frame) -> Result<(), RendererError> {
+pub fn complete_screen_render(target: Frame) -> Result<(), RendererError> {
     Ok(
         target.finish().map_err(|_|RendererError::BufferSwapError)?
     )

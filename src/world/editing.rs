@@ -9,15 +9,9 @@ pub fn add_editor_controls(editor_graph: &mut EditorGraph) {
     editor_graph.add_control(create_main_sidebar()); 
 }
 
-pub fn create_main_sidebar() -> EditorGraphNode {
-    let entities_toggle = EditorGraphNode::Toggle {
-        title: ENTITIES_TOGGLE_TITLE.to_string(),
-        click_handler: Box::new(| visible | EditorEvent::SetWindowVisibility(visible, ENTITIES_WINDOW_NAME.to_string()))
-
-    };
-
-    EditorGraphNode::SideBar {
-        name: MAIN.to_string(),
-        children: vec!(entities_toggle)
-    }
+fn create_main_sidebar() -> EditorGraphNode {
+    create_editor_sidebar(
+        MAIN, 
+        vec!(create_editor_window_toggle(ENTITIES_TOGGLE_TITLE, ENTITIES_WINDOW_NAME))
+    )
 }

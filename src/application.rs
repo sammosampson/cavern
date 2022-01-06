@@ -81,6 +81,7 @@ impl Application {
 
 fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, ApplicationError> {
     let screen_renderer = create_screen_renderer(event_loop)?;
+    let editor_renderer = create_editor_renderer(&screen_renderer.display);
     let texture_cache = create_texture_cache(&screen_renderer)?;
     let game_timer = create_game_timer();
     let game_state = create_game_state();
@@ -92,16 +93,17 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let music_cache = create_music_cache()?;
         
     let mut resources = Resources::default();
-    &mut resources.insert(screen_renderer);
-    &mut resources.insert(texture_cache);
-    &mut resources.insert(game_timer);
-    &mut resources.insert(system_event_producer);
-    &mut resources.insert(system_event_channel);
-    &mut resources.insert(game_state);
-    &mut resources.insert(editor_graph);
-    &mut resources.insert(audio);
-    &mut resources.insert(sound_cache);
-    &mut resources.insert(music_cache);
+    resources.insert(screen_renderer);
+    resources.insert(editor_renderer);
+    resources.insert(texture_cache);
+    resources.insert(game_timer);
+    resources.insert(system_event_producer);
+    resources.insert(system_event_channel);
+    resources.insert(game_state);
+    resources.insert(editor_graph);
+    resources.insert(audio);
+    resources.insert(sound_cache);
+    resources.insert(music_cache);
     Ok(resources)
 }
 
