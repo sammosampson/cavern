@@ -1,8 +1,6 @@
 mod shaders;
-mod items;
 mod screen;
 mod display;
-mod textures;
 
 pub use glium:: {
     uniform,
@@ -36,8 +34,6 @@ pub use glium:: {
 
 pub use display::*;
 pub use shaders::*;
-pub use items::*;
-pub use textures::*;
 pub use screen::*;
 
 use crate::prelude::*;

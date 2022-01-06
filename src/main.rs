@@ -14,6 +14,8 @@ mod geometry;
 mod movement;
 mod animation;
 mod files;
+mod editing;
+mod textures;
 
 mod prelude {
     pub use std::io::Cursor;
@@ -37,6 +39,8 @@ mod prelude {
     pub use crate::movement::*;
     pub use crate::animation::*;
     pub use crate::files::*;
+    pub use crate::editing::*;
+    pub use crate::textures::*;
 }
 
 use prelude::*;

@@ -1,12 +1,14 @@
 mod sampler;
 mod regions;
 mod resources;
+mod rendering;
 
 pub use image::*;
 use legion::systems::CommandBuffer;
 pub use sampler::*;
 pub use regions::*;
 pub use resources::*;
+pub use rendering::*;
 
 use crate::prelude::*;
 

@@ -3,6 +3,18 @@ use crate::prelude::*;
 const TOTAL_ROWS: usize = 18;
 const TOTAL_COLUMNS: usize = 28;
 
+const LEVEL_TEST: [&str; TOTAL_ROWS] = [
+    "",
+    "","","","",
+    "",
+    "","","",
+    "              X             ",
+    "","","",
+    "",
+    "","","",
+    "",
+];
+
 const LEVEL_1: [&str; TOTAL_ROWS] = [
     "XXXXX     XXXXXXXX     XXXXX",
     "","","","",
@@ -41,7 +53,7 @@ const LEVEL_3: [&str; TOTAL_ROWS] = [
     "XXXX    XXXX    XXXX    XXXX"
 ];
 
-const LEVELS : [[&str; TOTAL_ROWS]; 3] = [LEVEL_1, LEVEL_2, LEVEL_3];
+const LEVELS : [[&str; TOTAL_ROWS]; 4] = [LEVEL_TEST, LEVEL_1, LEVEL_2, LEVEL_3];
 
 pub fn load_level(level: LevelNumber) -> LevelGrid {
     LevelGrid::from(level)

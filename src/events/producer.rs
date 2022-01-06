@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub fn create_system_event_producer() -> SystemEventProducer{
+pub fn create_system_event_producer() -> SystemEventProducer {
     SystemEventProducer::new()
 }
 pub struct SystemEventProducer {

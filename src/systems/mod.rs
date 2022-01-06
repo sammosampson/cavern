@@ -2,13 +2,14 @@ mod rendering;
 mod state;
 mod events;
 mod world;
-mod player;
 mod time;
 mod animation;
-mod input;
+mod screens;
 mod audio;
 mod movement;
 mod collisions;
+mod player;
+mod editing;
 
 pub use legion::*;
 pub use legion::query::Query;
@@ -22,11 +23,11 @@ pub fn build_world() -> World {
 
 pub fn build_start_schedule() -> Schedule {
     Schedule::builder()
-        .add_system(state::transition_state_to_starting_system())
+        .add_thread_local(state::transition_state_to_starting_system())
         .add_system(events::proliferate_system_events_system())
         .flush()    
         .add_system(time::game_time_system())    
-        .add_system(input::title_screen_input_system())
+        .add_system(screens::title_screen_input_system())
         .flush()
         .add_thread_local(animation::render_first_animation_frame_system())
         .add_thread_local(animation::render_animation_frame_system())
@@ -50,6 +51,7 @@ pub fn build_play_schedule() -> Schedule {
         .flush()
         .add_system(time::game_time_system())    
         .add_system(player::set_player_direction_from_input_system())
+        .add_thread_local(editing::editor_visibility_from_input_system())
         .flush()
         .add_system(movement::set_velocity_given_direction_system())
         .add_system(movement::reset_velocity_with_no_direction_system())
@@ -79,7 +81,7 @@ pub fn build_finish_schedule() -> Schedule {
         .add_system(state::transition_state_to_finishing_system())
         .add_system(events::proliferate_system_events_system())
         .flush()
-        .add_system(input::title_screen_input_system())
+        .add_system(screens::title_screen_input_system())
         .flush()    
         .add_thread_local(rendering::render_system())
         .add_system(audio::play_music_system())

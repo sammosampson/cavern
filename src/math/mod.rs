@@ -15,7 +15,6 @@ pub struct Dimensions {
     pub width: f32,
     pub height: f32
 }
-
 impl From<(u32, u32)> for Dimensions {
     fn from(from: (u32, u32)) -> Self {
         Dimensions {
@@ -41,6 +40,18 @@ impl Mul<f32> for Dimensions {
         }
     }
 }
+
+impl Div<f32> for Dimensions {
+    type Output = Dimensions;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        Self {
+            width: self.width / rhs,
+            height: self.height / rhs
+        }
+    }
+}
+
 
 pub fn min(left: f32, right: f32) -> f32 {
     if left < right {

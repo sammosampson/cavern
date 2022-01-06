@@ -59,7 +59,8 @@ impl Application {
     fn process_events(&mut self) {
         let mut event_producer = &mut self.resources.get_mut::<SystemEventProducer>().unwrap();
         let mut event_channel = &mut self.resources.get_mut::<SystemEventChannel>().unwrap();
-        self.event_loop.run(&mut event_producer, &mut event_channel);
+        let mut screen_renderer = &mut self.resources.get_mut::<ScreenRenderer>().unwrap();
+        self.event_loop.run(&mut event_producer, &mut event_channel, &mut screen_renderer);
     
     }
 
@@ -83,6 +84,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     let texture_cache = create_texture_cache(&screen_renderer)?;
     let game_timer = create_game_timer();
     let game_state = create_game_state();
+    let editor_graph = create_editor_graph();
     let system_event_producer = create_system_event_producer();
     let system_event_channel = create_system_event_channel();
     let audio = create_audio_player();
@@ -96,6 +98,7 @@ fn build_resources(event_loop: &SystemEventLoop) -> Result<Resources, Applicatio
     &mut resources.insert(system_event_producer);
     &mut resources.insert(system_event_channel);
     &mut resources.insert(game_state);
+    &mut resources.insert(editor_graph);
     &mut resources.insert(audio);
     &mut resources.insert(sound_cache);
     &mut resources.insert(music_cache);
