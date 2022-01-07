@@ -54,7 +54,9 @@ fn render_items(
     renderers.render(textures, &mut target)
         .expect("Could not render textures");
     
-    editor_renderer.render(editor_graph, event_producer, &screen_renderer.display, &mut target);
+    if editor_renderer.render(editor_graph, event_producer, &screen_renderer.display, &mut target) {
+        screen_renderer.display.gl_window().window().request_redraw();
+    }
     
     complete_screen_render(target)
         .expect("Could not complete render");

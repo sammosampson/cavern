@@ -1,5 +1,6 @@
+use crate::prelude::*;
 
+#[derive(Debug, Clone)]
 pub enum EditorEvent {
-    None,
-    SetWindowVisibility(bool, String),    
+    SetWindowVisibility(EditorGraphDataItem, bool, String),    
 }

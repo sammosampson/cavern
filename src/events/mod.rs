@@ -11,8 +11,9 @@ pub use producer::*;
 
 use crate::prelude::*;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub enum SystemEvent {
     CloseRequested,
     KeyboardAction { state: InputState, button: KeyboardButton },
+    EditorChange(EditorEvent),
 }
