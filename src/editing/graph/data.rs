@@ -2,6 +2,8 @@ use crate::prelude::*;
 
 pub enum EditorGraphData {
     Boolean { value: bool },
+    EditableVector { entity: Entity, value: Vector }
+    
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]

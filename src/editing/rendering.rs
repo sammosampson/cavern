@@ -19,7 +19,6 @@ impl EditorRenderer {
     }
 
     pub fn process_event(&mut self, event: &WindowEvent){
-        println!("{:?}", event);
         self.egui.on_event(event);
     }
 
@@ -97,6 +96,9 @@ impl EditorRenderer {
             EditorGraphNode::Toggle { item, title, click_handler } => {
                 self.render_toggle(data, item, &title, ui, event_producer, click_handler);
             },
+            EditorGraphNode::Vector { item, title, change_handler } => {
+                self.render_editiable_vector(data, item, &title, ui, event_producer, change_handler);
+            },
             _ => {}
         }
     }
@@ -144,13 +146,43 @@ impl EditorRenderer {
         match data_item {
             EditorGraphData::Boolean { mut value } => {            
                 if self.render_editable_bool(ui, label, &mut value) {
+                    println!("clicking: {}", label);
                     event_producer.push(SystemEvent::EditorChange(click_handler(value)));
                 }
+            },
+            _ => {}
+        }
+    }
+
+    fn render_editiable_vector(
+        &self,
+        data: &HashMap<EditorGraphDataItem, EditorGraphData>,
+        item: &EditorGraphDataItem,
+        label: &str,
+        ui: &mut egui::Ui,
+        event_producer: &mut SystemEventProducer,
+        change_handler: &Box<dyn Fn(Entity, Vector) -> EditorEvent>
+    ) {
+        if let Some(data_item) = data.get(item) {
+            match data_item {
+                EditorGraphData::EditableVector { entity, mut value } => {
+                    ui.horizontal(|ui| {
+                        if self.render_editable_float(ui, "x:", &mut value.x) || self.render_editable_float(ui, "y:", &mut value.y) {
+                            event_producer.push(SystemEvent::EditorChange(change_handler(*entity, value)));
+                        }
+                    });
+                },
+                _ => {}
             }
         }
     }
 
     fn render_editable_bool(&self, ui: &mut egui::Ui, label: &str, value: &mut bool) -> bool {
         ui.add(egui::Checkbox::new(value, label)).changed()
+    }
+
+    fn render_editable_float(&self, ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+        ui.label(label);
+        ui.add(egui::DragValue::new(value)).changed()
     }
 }

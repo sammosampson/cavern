@@ -44,6 +44,10 @@ impl EditorGraph {
     pub fn add_boolean_data(&mut self, item: EditorGraphDataItem, value: bool) {
         self.add_data(item, EditorGraphData::Boolean { value })
     }
+
+    pub fn add_editable_vector_data(&mut self, item: EditorGraphDataItem, entity: Entity, value: Vector) {
+        self.add_data(item, EditorGraphData::EditableVector { entity, value })
+    }
     
     pub fn add_data(&mut self, item: EditorGraphDataItem, value: EditorGraphData) {
         self.data.insert(item, value);

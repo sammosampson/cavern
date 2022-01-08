@@ -4,7 +4,8 @@ const MAIN: &str = "Main";
 const ENTITIES_WINDOW_NAME: &str = "Entities";
 
 pub enum EditorItems {
-    EntitiesWindowVisibility
+    EntitiesWindowVisibility,
+    Position
 }
 
 impl From<EditorItems> for EditorGraphDataItem {
@@ -19,16 +20,9 @@ pub fn add_editor_controls(editor_graph: &mut EditorGraph) {
 }
 
 fn create_main_sidebar() -> EditorGraphNode {
-    create_main_sidebar_with_children(
-        vec!(create_entities_window_visibility_toggle())
-    )
-}
-
-fn create_entities_window() -> EditorGraphNode {
-    create_editor_window(
-        ENTITIES_WINDOW_NAME, 
-        vec!()
-    )
+    create_main_sidebar_with_children(vec!(
+        create_entities_window_visibility_toggle()
+    ))
 }
 
 fn create_main_sidebar_with_children(children: Vec<EditorGraphNode>) -> EditorGraphNode {
@@ -40,5 +34,24 @@ fn create_entities_window_visibility_toggle() -> EditorGraphNode {
         EditorItems::EntitiesWindowVisibility.into(), 
         "Entities", 
         ENTITIES_WINDOW_NAME
+    )
+}
+
+fn create_entities_window() -> EditorGraphNode {
+    create_entities_window_with_children(vec!(
+        create_position_vector()
+    ))
+}
+
+fn create_entities_window_with_children(children: Vec<EditorGraphNode>) -> EditorGraphNode {
+    create_editor_window(ENTITIES_WINDOW_NAME, children)
+}
+
+fn create_position_vector() -> EditorGraphNode {
+    let item = EditorItems::Position.into();
+    create_editor_editable_vector(
+        item, 
+        "Position", 
+        Box::new(move | entity, position| EditorEvent::VectorChanged(item, entity, position))
     )
 }
