@@ -3,14 +3,14 @@ pub use instances::*;
 
 use crate::prelude::*;
 
-pub struct RenderItem {
+pub struct TextureRenderItem {
     pub entity_id: WorldEntityId,
     pub layer: u8,
     pub texture: String,
     pub centre_position: Vector
 }
 
-impl From<(&WorldEntityId, &Texture, &Position, &Layer)> for RenderItem {
+impl From<(&WorldEntityId, &Texture, &Position, &Layer)> for TextureRenderItem {
     fn from(from: (&WorldEntityId, &Texture, &Position, &Layer)) -> Self {
         let (id, texture, position, layer) = from;
         Self {

@@ -1,11 +1,11 @@
 use crate::prelude::*;
 
-pub struct InstanceRenderers {
-    inner: Vec<InstanceRenderer>
+pub struct TextureInstanceRenderers {
+    inner: Vec<TextureInstanceRenderer>
 }
 
-impl InstanceRenderers {
-    pub fn new(screen_renderer: &ScreenRenderer, textures: &TextureCache, to_render: Vec<RenderItem>) -> Result<Self, RendererError> {    
+impl TextureInstanceRenderers {
+    pub fn new(screen_renderer: &ScreenRenderer, textures: &TextureCache, to_render: Vec<TextureRenderItem>) -> Result<Self, RendererError> {    
         let mut inner = create_inner_renderers(screen_renderer, textures,to_render)?;
         sort_renderers(&mut inner);
         let renderers = Self { inner };
@@ -23,8 +23,8 @@ impl InstanceRenderers {
 fn create_inner_renderers(
     screen_renderer: &ScreenRenderer,
     textures: &TextureCache,
-    to_render: Vec<RenderItem>
-) -> Result<Vec<InstanceRenderer>, RendererError> {
+    to_render: Vec<TextureRenderItem>
+) -> Result<Vec<TextureInstanceRenderer>, RendererError> {
     let to_render = to_render
         .into_iter()
         .group_by(|render_item| (render_item.texture.clone(), render_item.layer));
@@ -32,26 +32,26 @@ fn create_inner_renderers(
     let mut renderers = vec!();
 
     for ((texture, layer), grouped_items) in &to_render {
-        let items: Vec<RenderItem> = grouped_items.collect();
+        let items: Vec<TextureRenderItem> = grouped_items.collect();
         let instances = convert_render_items_to_instance_inputs(items);
-        renderers.push(InstanceRenderer::new(screen_renderer, textures, &texture, instances, layer)?);
+        renderers.push(TextureInstanceRenderer::new(screen_renderer, textures, &texture, instances, layer)?);
     }
 
     Ok(renderers)
 }
 
-fn convert_render_items_to_instance_inputs(render_items: Vec<RenderItem>) -> Vec<InstanceInput> {
+fn convert_render_items_to_instance_inputs(render_items: Vec<TextureRenderItem>) -> Vec<InstanceInput> {
     render_items
         .into_iter()
         .map(|item| InstanceInput::from(item.centre_position))
         .collect()
 }
 
-fn sort_renderers(renderers: &mut Vec<InstanceRenderer>) {
+fn sort_renderers(renderers: &mut Vec<TextureInstanceRenderer>) {
     renderers.sort_by(| renderer_a, renderer_b | renderer_a.layer().cmp(&renderer_b.layer()));
 }
 
-pub struct InstanceRenderer {
+pub struct TextureInstanceRenderer {
     shader_program: Program,
     model_matrix: Matrix4x4,
     texture: String,
@@ -61,7 +61,7 @@ pub struct InstanceRenderer {
     instances: VertexBuffer<InstanceInput>
 }
 
-impl InstanceRenderer {
+impl TextureInstanceRenderer {
     pub fn new(
         screen_renderer: &ScreenRenderer,
         textures: &TextureCache,
