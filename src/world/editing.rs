@@ -16,12 +16,12 @@ impl From<EditorItems> for EditorGraphDataItem {
 
 pub fn add_editor_controls(editor_graph: &mut EditorGraph) {
     editor_graph.add_control(create_main_sidebar()); 
-    editor_graph.add_control(create_entities_window()); 
 }
 
 fn create_main_sidebar() -> EditorGraphNode {
     create_main_sidebar_with_children(vec!(
-        create_entities_window_visibility_toggle()
+        create_entities_window_visibility_toggle(),
+        create_position_vector()
     ))
 }
 
@@ -35,16 +35,6 @@ fn create_entities_window_visibility_toggle() -> EditorGraphNode {
         "Entities", 
         ENTITIES_WINDOW_NAME
     )
-}
-
-fn create_entities_window() -> EditorGraphNode {
-    create_entities_window_with_children(vec!(
-        create_position_vector()
-    ))
-}
-
-fn create_entities_window_with_children(children: Vec<EditorGraphNode>) -> EditorGraphNode {
-    create_editor_window(ENTITIES_WINDOW_NAME, children)
 }
 
 fn create_position_vector() -> EditorGraphNode {
