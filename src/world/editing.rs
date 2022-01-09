@@ -3,17 +3,6 @@ use crate::prelude::*;
 const MAIN: &str = "Main";
 const ENTITIES_WINDOW_NAME: &str = "Entities";
 
-pub enum EditorItems {
-    EntitiesWindowVisibility,
-    Position
-}
-
-impl From<EditorItems> for EditorGraphDataItem {
-    fn from(from: EditorItems) -> Self {
-        (from as usize).into()
-    }
-}
-
 pub fn add_editor_controls(editor_graph: &mut EditorGraph) {
     editor_graph.add_control(create_main_sidebar()); 
 }

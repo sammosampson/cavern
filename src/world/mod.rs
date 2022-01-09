@@ -21,6 +21,12 @@ impl core::fmt::Debug for WorldEntityId {
     }
 }
 
+impl From<&WorldEntityId> for String {
+    fn from(from: &WorldEntityId) -> Self {
+        from.0.clone()
+    }
+}
+
 impl From<&str> for WorldEntityId {
     fn from(name: &str) -> Self {
         Self(name.to_string())

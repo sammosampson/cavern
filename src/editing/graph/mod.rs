@@ -15,6 +15,7 @@ pub fn create_editor_graph() -> EditorGraph {
 pub struct EditorGraph {
     controls: Vec<EditorGraphNode>, 
     data: HashMap<EditorGraphDataItem, EditorGraphData>,
+    entity_data: HashMap<(Entity, EditorGraphDataItem), EditorGraphData>,
     state: EditorState,
     editor_visible: bool
 }
@@ -24,6 +25,7 @@ impl EditorGraph {
         Self {
             controls: vec!(),
             data: HashMap::default(),
+            entity_data: HashMap::default(),
             state: EditorState::default(),
             editor_visible: false
         }
@@ -45,12 +47,24 @@ impl EditorGraph {
         self.add_data(item, EditorGraphData::Boolean { value })
     }
 
-    pub fn add_editable_vector_data(&mut self, item: EditorGraphDataItem, entity: Entity, value: Vector) {
-        self.add_data(item, EditorGraphData::EditableVector { entity, value })
+    pub fn add_string_entity_data(&mut self, item: EditorGraphDataItem, entity: Entity, value: String) {
+        self.add_entity_data(entity, item, EditorGraphData::EntityString { entity, value })
     }
-    
+
+    pub fn add_editable_vector_entity_data(&mut self, item: EditorGraphDataItem, entity: Entity, value: Vector) {
+        self.add_entity_data(entity, item, EditorGraphData::EntityVector { entity, value, editable: true })
+    }
+
+    pub fn add_editable_float_entity_data(&mut self, item: EditorGraphDataItem, entity: Entity, value: f32) {
+        self.add_entity_data(entity, item, EditorGraphData::EntityFloat { entity, value, editable: true })
+    }
+
     pub fn add_data(&mut self, item: EditorGraphDataItem, value: EditorGraphData) {
         self.data.insert(item, value);
+    }
+
+    pub fn add_entity_data(&mut self, entity: Entity, item: EditorGraphDataItem, value: EditorGraphData) {
+        self.entity_data.insert((entity, item), value);
     }
 
     pub fn controls(&self) -> &Vec<EditorGraphNode> {

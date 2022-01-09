@@ -35,3 +35,33 @@ pub fn editor_state_from_input(
     }
 }
 
+#[system(for_each)]
+pub fn editor_graph_entity_extraction(
+    entity: &Entity,
+    id: &WorldEntityId,
+    #[resource] editor_graph: &mut EditorGraph
+) {
+    editor_graph.add_string_entity_data(EditorItems::EntityId.into(), *entity, id.into());
+}
+
+#[system(for_each)]
+pub fn editor_graph_position_extraction(
+    entity: &Entity,
+    position: &Position,
+    next_position: &NextPosition,
+    #[resource] editor_graph: &mut EditorGraph
+) {
+    editor_graph.add_editable_vector_entity_data(EditorItems::Position.into(), *entity, **position);
+    editor_graph.add_editable_vector_entity_data(EditorItems::NextPosition.into(), *entity, **next_position);
+}
+
+#[system(for_each)]
+pub fn editor_graph_velocity_extraction(
+    entity: &Entity,
+    velocity: &Velocity,
+    maximum_velocity: &MaximumVelocity,
+    #[resource] editor_graph: &mut EditorGraph
+) {
+    editor_graph.add_editable_vector_entity_data(EditorItems::Velocity.into(), *entity, **velocity);
+    editor_graph.add_editable_float_entity_data(EditorItems::MaximumVelocity.into(), *entity, **maximum_velocity);
+}

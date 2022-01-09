@@ -97,7 +97,7 @@ impl EditorRenderer {
                 self.render_toggle(data, item, &title, ui, event_producer, click_handler);
             },
             EditorGraphNode::Vector { item, title, change_handler } => {
-                self.render_editiable_vector(data, item, &title, ui, event_producer, change_handler);
+                self.render_entity_vector(data, item, &title, ui, event_producer, change_handler);
             },
             _ => {}
         }
@@ -154,7 +154,7 @@ impl EditorRenderer {
         }
     }
 
-    fn render_editiable_vector(
+    fn render_entity_vector(
         &self,
         data: &HashMap<EditorGraphDataItem, EditorGraphData>,
         item: &EditorGraphDataItem,
@@ -165,7 +165,7 @@ impl EditorRenderer {
     ) {
         if let Some(data_item) = data.get(item) {
             match data_item {
-                EditorGraphData::EditableVector { entity, mut value } => {
+                EditorGraphData::EntityVector { entity, mut value, editable } => {
                     ui.horizontal(|ui| {
                         if self.render_editable_float(ui, "x:", &mut value.x) || self.render_editable_float(ui, "y:", &mut value.y) {
                             event_producer.push(SystemEvent::EditorChange(change_handler(*entity, value)));
