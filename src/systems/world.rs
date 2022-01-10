@@ -10,3 +10,14 @@ pub fn remove_entity(
     println!("remove entity {:?}", id);
     buffer.remove(*entity);
 }
+
+#[system(for_each)]
+#[filter(!component::<Added>())]
+pub fn mark_added_entity(
+    entity: &Entity,
+    id: &WorldEntityId,
+    buffer: &mut CommandBuffer,
+) {
+    println!("added entity {:?}", id);
+    buffer.add_component(*entity, Added);
+}

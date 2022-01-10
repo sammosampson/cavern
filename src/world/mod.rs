@@ -40,6 +40,7 @@ impl From<String> for WorldEntityId {
 }
 
 pub struct Remove;
+pub struct Added;
 
 pub fn remove_entity(buffer: &mut CommandBuffer, entity: Entity) {
     buffer.add_component(entity, Remove)

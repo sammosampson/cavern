@@ -18,7 +18,7 @@ impl EditorRenderer {
         }
     }
 
-    pub fn process_event(&mut self, event: &WindowEvent){
+    pub fn process_event(&mut self, event: &WindowEvent) {
         self.egui.on_event(event);
     }
 
@@ -32,16 +32,13 @@ impl EditorRenderer {
         if !graph.editor_visible() {
             return false;
         }
-
+        
         self.begin_frame(display);
         self.set_visuals();
         
-        for node in graph.controls() {
-            self.render_topmost(graph, &node, event_producer)
-        }
+        self.render_windows(graph, event_producer);
 
-        graph.clear_data();
-        self.end_frame_and_paint(&display, target)
+        self.end_frame_and_paint(display, target)
     }
 
     fn set_visuals(&mut self) {
@@ -60,129 +57,178 @@ impl EditorRenderer {
         needs_repaint
     }
 
-    fn render_topmost(
+    fn render_windows(
         &self,
         graph: &EditorGraph,
-        node: &EditorGraphNode,
         event_producer: &mut SystemEventProducer
     ) {
-        match node {
-            EditorGraphNode::SideBar { name, children } => 
-                self.render_side_panel(name, children, graph, event_producer),
-            EditorGraphNode::Window { name, children } =>  
-                self.render_window(name, children, graph, event_producer),
-            _ => {}
+        for window in graph.windows().iter() {
+            match window.style() {
+                EditorGraphWindowStyle::SideBar => 
+                    self.render_side_panel(&window_name(window.id()), window, graph, event_producer),
+                EditorGraphWindowStyle::Window =>  
+                    self.render_window(&window_name(window.id()), window, graph, event_producer)
+            }
         }
     }
 
     fn render_node(
         &self,
         ui: &mut egui::Ui,
-        data: &HashMap<EditorGraphDataItem, EditorGraphData>,
-        node: &EditorGraphNode,
-        event_producer: &mut SystemEventProducer
-    ) {
-        self.render_data(ui, data, node, event_producer)
-    }
-
-    fn render_data(
-        &self,
-        ui: &mut egui::Ui,
-        data: &HashMap<EditorGraphDataItem, EditorGraphData>,
+        window: &EditorGraphWindow,
+        graph: &EditorGraph,
         node: &EditorGraphNode,
         event_producer: &mut SystemEventProducer
     ) {
         match node {
-            EditorGraphNode::Toggle { item, title, click_handler } => {
-                self.render_toggle(data, item, &title, ui, event_producer, click_handler);
-            },
-            EditorGraphNode::Vector { item, title, change_handler } => {
-                self.render_entity_vector(data, item, &title, ui, event_producer, change_handler);
-            },
-            _ => {}
+            EditorGraphNode::Container { children } =>
+                self.render_container(ui, window, children, graph, event_producer),
+            EditorGraphNode::Seperator => 
+                render_separator(ui),
+            EditorGraphNode::ScrollArea { children } =>
+                self.render_scroll_area(ui, window, children, graph, event_producer),
+            EditorGraphNode::EntityListItems { item } => 
+                render_entity_list_items(ui, window, graph, item, event_producer),
+            EditorGraphNode::Vector { item, title, } => 
+                self.render_entity_data(ui, window, graph, item, &title, event_producer),
+            EditorGraphNode::Float { item, title, } => 
+                self.render_entity_data(ui, window, graph, item, &title, event_producer),
         }
     }
 
-    fn render_side_panel(&self, name: &String, children: &Vec<EditorGraphNode>, graph: &EditorGraph, event_producer: &mut SystemEventProducer) {
+    fn render_children(
+        &self,
+        ui: &mut egui::Ui,
+        window: &EditorGraphWindow,
+        children: &Vec<EditorGraphNode>,
+        graph: &EditorGraph,
+        event_producer: &mut SystemEventProducer
+    ) {
+        for node in children {
+            self.render_node(ui, window, graph, node, event_producer);
+        }
+    } 
+
+    fn render_side_panel(
+        &self, 
+        name: &str,
+        window: &EditorGraphWindow,
+        graph: &EditorGraph,
+        event_producer: &mut SystemEventProducer
+    ) {
         egui::SidePanel::left(name)
             .resizable(false)
             .show(self.egui.ctx(), |ui| {
-                self.render_children(children, ui, graph, event_producer);
+                self.render_children(ui, window, window.controls(), graph, event_producer);
             });
     }
     
-    fn render_window(&self, name: &String, children: &Vec<EditorGraphNode>, graph: &EditorGraph, event_producer: &mut SystemEventProducer) {
-        if !graph.is_window_visible(name) {
-            return;
-        }
+    fn render_window(
+        &self,
+        name: &str,
+        window: &EditorGraphWindow,
+        graph: &EditorGraph,
+        event_producer: &mut SystemEventProducer
+    ) {
         egui::Window::new(name)
             .resizable(false)
             .show(self.egui.ctx(), |ui| {
-                self.render_children(children, ui, graph, event_producer);
+                self.render_children(ui, window, window.controls(), graph, event_producer);
+            });
+    }  
+
+    fn render_container(
+        &self, 
+        ui: &mut egui::Ui,
+        window: &EditorGraphWindow,
+        children: &Vec<EditorGraphNode>,
+        graph: &EditorGraph,
+        event_producer: &mut SystemEventProducer
+    ) {
+        self.render_children(ui, window, children, graph, event_producer)
+    }
+    
+    fn render_scroll_area(
+        &self,
+        ui: &mut egui::Ui,
+        window: &EditorGraphWindow,
+        children: &Vec<EditorGraphNode>,
+        graph: &EditorGraph,
+        event_producer: &mut SystemEventProducer
+    ) {
+        egui::ScrollArea::auto_sized()
+            .show(ui, |ui| {
+                for group_child_node in children {
+                    self.render_node(ui, window, graph, group_child_node, event_producer);
+                }    
             });
     }
 
-    fn render_children(&self, children: &Vec<EditorGraphNode>, ui: &mut egui::Ui, graph: &EditorGraph, event_producer: &mut SystemEventProducer) {
-        for node in children {
-            self.render_node(ui, &graph.data(), node, event_producer);
-        }
-    }
-
-    fn render_toggle(
+    fn render_entity_data(
         &self,
-        data: &HashMap<EditorGraphDataItem, EditorGraphData>,
+        ui: &mut egui::Ui,
+        window: &EditorGraphWindow,
+        graph: &EditorGraph,
         item: &EditorGraphDataItem,
         label: &str,
-        ui: &mut egui::Ui,
-        event_producer: &mut SystemEventProducer,
-        click_handler: &Box<dyn Fn(bool) -> EditorEvent>
+        event_producer: &mut SystemEventProducer
     ) {
-        let data_item = if !data.contains_key(item) {
-            &EditorGraphData::Boolean { value: false }
-        } else {
-            data.get(item).unwrap()
-        };
-
-        match data_item {
-            EditorGraphData::Boolean { mut value } => {            
-                if self.render_editable_bool(ui, label, &mut value) {
-                    println!("clicking: {}", label);
-                    event_producer.push(SystemEvent::EditorChange(click_handler(value)));
+        if let Some(selected_entity) = window.selected_entity() {
+            if let Some(data_item) = graph.entity_data().get(&(selected_entity, *item)) {
+                match data_item {
+                    EditorGraphData::EntityVector { entity, mut value } => {
+                        ui.horizontal(|ui| {
+                            ui.label(label);
+                            if render_float(ui, "x:", &mut value.x) || render_float(ui, "y:", &mut value.y) {
+                                event_producer.push(SystemEvent::EditorChange(EditorEvent::VectorChanged(*item, *entity, value)))
+                            }
+                        });
+                    },
+                    EditorGraphData::EntityFloat { entity, mut value } => {
+                        ui.horizontal(|ui| {
+                            if render_float(ui, label, &mut value) {
+                                event_producer.push(SystemEvent::EditorChange(EditorEvent::FloatChanged(*item, *entity, value)))
+                            }
+                        });
+                    },
+                    _ => {}
                 }
-            },
-            _ => {}
-        }
-    }
-
-    fn render_entity_vector(
-        &self,
-        data: &HashMap<EditorGraphDataItem, EditorGraphData>,
-        item: &EditorGraphDataItem,
-        label: &str,
-        ui: &mut egui::Ui,
-        event_producer: &mut SystemEventProducer,
-        change_handler: &Box<dyn Fn(Entity, Vector) -> EditorEvent>
-    ) {
-        if let Some(data_item) = data.get(item) {
-            match data_item {
-                EditorGraphData::EntityVector { entity, mut value, editable } => {
-                    ui.horizontal(|ui| {
-                        if self.render_editable_float(ui, "x:", &mut value.x) || self.render_editable_float(ui, "y:", &mut value.y) {
-                            event_producer.push(SystemEvent::EditorChange(change_handler(*entity, value)));
-                        }
-                    });
-                },
-                _ => {}
             }
         }
     }
+}
 
-    fn render_editable_bool(&self, ui: &mut egui::Ui, label: &str, value: &mut bool) -> bool {
-        ui.add(egui::Checkbox::new(value, label)).changed()
+fn render_entity_list_items(
+    ui: &mut egui::Ui,
+    window: &EditorGraphWindow,
+    graph: &EditorGraph,
+    item: &EditorGraphDataItem,
+    event_producer: &mut SystemEventProducer
+) {
+    for ((_, list_item_data_item), list_item_data) in graph.entity_data() {
+        if item != list_item_data_item {
+            continue;
+        }
+        match list_item_data {
+            EditorGraphData::EntityString { entity, value } => {
+                if ui.selectable_label(window.is_selected_entity(entity), value).clicked() {
+                    event_producer.push(SystemEvent::EditorChange(EditorEvent::EntitySelected(*entity, window.id())));
+                }
+            }
+            _ => {},
+        }
     }
+}
 
-    fn render_editable_float(&self, ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
-        ui.label(label);
-        ui.add(egui::DragValue::new(value)).changed()
-    }
+fn render_float(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    ui.label(label);
+    ui.add(egui::DragValue::new(value)).changed()
+}
+
+fn render_separator(ui: &mut egui::Ui) {
+    ui.separator();
+}
+
+fn window_name(id: u8) -> String {
+    format!("window_{}", id)
 }

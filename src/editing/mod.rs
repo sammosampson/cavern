@@ -1,16 +1,12 @@
 mod rendering;
 mod graph;
-mod state;
 
 pub use rendering::*;
 pub use graph::*;
-pub use state::*;
 
 pub enum EditorItems {
-    EntitiesWindowVisibility = 10000,
-    EntityId,
+    EntityId = 10000,
     Position,
-    NextPosition,
     Velocity,
     MaximumVelocity
 }

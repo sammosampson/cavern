@@ -1,22 +1,14 @@
 use crate::prelude::*;
 
 pub struct ScreenRenderer {
-    pub display: Display,
-    editor_renderer: EditorRenderer
-    
+    pub display: Display
 }
 
 impl ScreenRenderer {
-    pub fn process_event(&mut self, event: &WindowEvent) {
-        self.editor_renderer.process_event(event);
-    }
-
     pub fn new(event_loop: &EventLoop<()>) -> Result<Self, RendererError> {
         let display = create_display_for_renderer(event_loop)?;
-        let editor_renderer = EditorRenderer::new(&display);
         Ok(Self {
-            display,
-            editor_renderer
+            display
         })
     }
 

@@ -59,8 +59,8 @@ impl Application {
     fn process_events(&mut self) {
         let mut event_producer = &mut self.resources.get_mut::<SystemEventProducer>().unwrap();
         let mut event_channel = &mut self.resources.get_mut::<SystemEventChannel>().unwrap();
-        let mut screen_renderer = &mut self.resources.get_mut::<ScreenRenderer>().unwrap();
-        self.event_loop.run(&mut event_producer, &mut event_channel, &mut screen_renderer);
+        let mut editor_renderer = &mut self.resources.get_mut::<EditorRenderer>().unwrap();
+        self.event_loop.run(&mut event_producer, &mut event_channel, &mut editor_renderer);
     
     }
 

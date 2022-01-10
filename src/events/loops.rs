@@ -19,12 +19,13 @@ impl SystemEventLoop {
         &mut self,
         event_producer: &mut SystemEventProducer,
         event_channel: &mut SystemEventChannel,
-        renderer: &mut ScreenRenderer
+        editor_renderer: &mut EditorRenderer,
+        
     ) {
         self.inner.run_return(|event, _, flow| {
             match event {
                 Event::WindowEvent { window_id: _, event} => {
-                    renderer.process_event(&event);
+                    editor_renderer.process_event(&event);
                     match event {
                         WindowEvent::CloseRequested => event_producer.push(SystemEvent::CloseRequested),
                         WindowEvent::KeyboardInput { input, device_id: _, is_synthetic: _} => {

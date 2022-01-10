@@ -1,37 +1,71 @@
 use crate::prelude::*;
 
-pub fn create_editor_sidebar(name: &str, children: Vec::<EditorGraphNode>) -> EditorGraphNode{
-    EditorGraphNode::SideBar {
-        name: name.to_string(),
-        children
-    }  
+pub fn create_editor_entities_list() -> EditorGraphNode {
+    create_editor_list(EditorItems::EntityId.into())
 }
 
-pub fn create_editor_window(name: &str, children: Vec::<EditorGraphNode>) -> EditorGraphNode {
-    EditorGraphNode::Window {
-        name: name.to_string(),
-        children
+pub fn create_editor_position() -> EditorGraphNode {
+    let item = EditorItems::Position.into();
+    create_editor_vector(item, "Position")
+}
+
+pub fn create_editor_velocity() -> EditorGraphNode {
+    let item = EditorItems::Velocity.into();
+    create_editor_vector(item, "Velocity")
+}
+
+pub fn create_editor_maximum_velocity() -> EditorGraphNode {
+    let item = EditorItems::MaximumVelocity.into();
+    create_editor_float(item, "Max. Velocity")
+}
+
+fn create_editor_list(item: EditorGraphDataItem) -> EditorGraphNode {
+    create_editor_container(vec!(
+        create_editor_separator(),
+        create_editor_scroll_area(
+            vec!(create_editor_list_items(item))
+        ),
+        create_editor_separator()
+    ))
+}
+
+fn create_editor_container(children: Vec::<EditorGraphNode>) -> EditorGraphNode {
+    EditorGraphNode::Container { children }
+}
+
+fn create_editor_separator() -> EditorGraphNode {
+    EditorGraphNode::Seperator
+}
+
+fn create_editor_scroll_area(children: Vec::<EditorGraphNode>) -> EditorGraphNode {
+    EditorGraphNode::ScrollArea { children }
+}
+
+fn create_editor_list_items(item: EditorGraphDataItem) -> EditorGraphNode {
+    EditorGraphNode::EntityListItems {
+        item
     }
 }
 
-pub fn create_editor_window_toggle(item: EditorGraphDataItem, title: &str, window_name: &'static str) -> EditorGraphNode {
-    EditorGraphNode::Toggle {
-        item,
-        title: title.to_string(),
-        click_handler: Box::new(move | visible | EditorEvent::SetWindowVisibility(item, visible, window_name.to_string())),
-    }
-}
-pub fn create_editor_editable_vector(item: EditorGraphDataItem, title: &str, change_handler: Box<dyn Fn(Entity, Vector) -> EditorEvent>) -> EditorGraphNode {
+fn create_editor_vector(item: EditorGraphDataItem, title: &str) -> EditorGraphNode {
     EditorGraphNode::Vector {
         item,
-        title: title.to_string(),
-        change_handler
+        title: title.to_string()
+    }
+}
+
+fn create_editor_float(item: EditorGraphDataItem, title: &str) -> EditorGraphNode {
+    EditorGraphNode::Float {
+        item,
+        title: title.to_string()
     }
 }
 
 pub enum EditorGraphNode {
-    SideBar { name: String, children: Vec<EditorGraphNode> },
-    Window { name: String, children: Vec<EditorGraphNode> },
-    Toggle { item: EditorGraphDataItem, title: String, click_handler: Box<dyn Fn(bool) -> EditorEvent> },
-    Vector { item: EditorGraphDataItem, title: String, change_handler: Box<dyn Fn(Entity, Vector) -> EditorEvent> },
+    Container { children: Vec<EditorGraphNode> },
+    Seperator,
+    ScrollArea { children: Vec<EditorGraphNode> },
+    EntityListItems { item: EditorGraphDataItem },
+    Vector { item: EditorGraphDataItem, title: String },
+    Float { item: EditorGraphDataItem, title: String },
 }
