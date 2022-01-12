@@ -19,6 +19,18 @@ pub fn create_editor_maximum_velocity() -> EditorGraphNode {
     create_editor_float(item, "Max. Velocity")
 }
 
+pub fn create_editor_collision_box() -> EditorGraphNode {
+    let item = EditorItems::CollisionBox.into();
+    create_editor_float(item, "Collision Box")
+}
+
+pub fn create_editor_tab(children: Vec::<EditorGraphNode>) -> EditorGraphNode {
+    create_editor_container(vec!(
+        create_extract_window_button(),
+        create_editor_container(children)
+    ))
+}
+
 fn create_editor_list(item: EditorGraphDataItem) -> EditorGraphNode {
     create_editor_container(vec!(
         create_editor_separator(),
@@ -27,6 +39,11 @@ fn create_editor_list(item: EditorGraphDataItem) -> EditorGraphNode {
         ),
         create_editor_separator()
     ))
+}
+
+fn create_extract_window_button() -> EditorGraphNode {
+    let item = EditorItems::ExtractWindow.into();
+    create_button(item, ">>")
 }
 
 fn create_editor_container(children: Vec::<EditorGraphNode>) -> EditorGraphNode {
@@ -47,25 +64,42 @@ fn create_editor_list_items(item: EditorGraphDataItem) -> EditorGraphNode {
     }
 }
 
+fn create_button(item: EditorGraphDataItem, title: &str) -> EditorGraphNode {
+    EditorGraphNode::Button {
+        item,
+        title: title.to_string()
+    }
+}
+
 fn create_editor_vector(item: EditorGraphDataItem, title: &str) -> EditorGraphNode {
-    EditorGraphNode::Vector {
+    EditorGraphNode::EntityVector {
+        item,
+        title: title.to_string()
+    }
+}
+
+fn create_editor_dimensions(item: EditorGraphDataItem, title: &str) -> EditorGraphNode {
+    EditorGraphNode::EntityDimensions {
         item,
         title: title.to_string()
     }
 }
 
 fn create_editor_float(item: EditorGraphDataItem, title: &str) -> EditorGraphNode {
-    EditorGraphNode::Float {
+    EditorGraphNode::EntityFloat {
         item,
         title: title.to_string()
     }
 }
 
+#[derive(Clone)]
 pub enum EditorGraphNode {
     Container { children: Vec<EditorGraphNode> },
     Seperator,
     ScrollArea { children: Vec<EditorGraphNode> },
+    Button { item: EditorGraphDataItem, title: String },
     EntityListItems { item: EditorGraphDataItem },
-    Vector { item: EditorGraphDataItem, title: String },
-    Float { item: EditorGraphDataItem, title: String },
+    EntityVector { item: EditorGraphDataItem, title: String },
+    EntityDimensions { item: EditorGraphDataItem, title: String },
+    EntityFloat { item: EditorGraphDataItem, title: String },
 }

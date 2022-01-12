@@ -4,6 +4,7 @@ pub enum EditorGraphData {
     EntityString { entity: Entity, value: String },
     EntityFloat { entity: Entity, value: f32 },   
     EntityVector { entity: Entity, value: Vector },   
+    EntityDimensions { entity: Entity, value: Dimensions },   
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]

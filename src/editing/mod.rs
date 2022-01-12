@@ -6,9 +6,11 @@ pub use graph::*;
 
 pub enum EditorItems {
     EntityId = 10000,
+    ExtractWindow,
     Position,
     Velocity,
-    MaximumVelocity
+    MaximumVelocity,
+    CollisionBox
 }
 
 impl From<EditorItems> for EditorGraphDataItem {

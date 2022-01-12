@@ -3,7 +3,9 @@ use crate::prelude::*;
 #[derive(Debug, Clone)]
 pub enum EditorEvent {
     EntitySelected(Entity, u8),    
+    ButtonClicked(EditorGraphDataItem, u8),    
     VectorChanged(EditorGraphDataItem, Entity, Vector),    
+    DimensionsChanged(EditorGraphDataItem, Entity, Dimensions),    
     FloatChanged(EditorGraphDataItem, Entity, f32),    
 }
 

@@ -50,6 +50,21 @@ impl EditorGraphWindows {
         }
     }
 
+    pub fn copy_window(&mut self, window_id: u8) {
+        if !self.windows.contains_key(&window_id) {
+            return;
+        }
+        
+        let controls = self.windows
+            .get(&window_id)
+            .unwrap()
+            .controls()
+            .to_vec();
+
+        self.add(controls);
+
+    }
+
     pub fn iter(&self) -> std::collections::hash_map::Values<u8, EditorGraphWindow>{
         self.windows.values()
     }

@@ -24,15 +24,17 @@ pub fn editor_event_handling(
     match event { 
         SystemEvent::EditorChange(editor_event) => {
             match editor_event {
-                EditorEvent::EntitySelected(entity, window_id) => {
-                    editor_graph.windows_mut().select_entity(*entity, *window_id);
+                EditorEvent::EntitySelected(entity, window_id) => 
+                    editor_graph.windows_mut().select_entity(*entity, *window_id),
+                EditorEvent::ButtonClicked(item, window_id) => {
+                    if **item == EditorItems::ExtractWindow as usize { 
+                        editor_graph.windows_mut().copy_window(*window_id);
+                    }
                 },
-                EditorEvent::VectorChanged(item, entity, value) => {
-                    buffer.add_component(*entity, EditorVectorChange { item: *item, value: *value });
-                },
-                EditorEvent::FloatChanged(item, entity, value) => {
-                    buffer.add_component(*entity, EditorFloatChange { item: *item, value: *value });
-                }
+                EditorEvent::VectorChanged(item, entity, value) => 
+                    buffer.add_component(*entity, EditorVectorChange { item: *item, value: *value }),
+                EditorEvent::FloatChanged(item, entity, value) => 
+                    buffer.add_component(*entity, EditorFloatChange { item: *item, value: *value })
             }
         },
         _ => {}

@@ -29,16 +29,15 @@ impl EditorRenderer {
         display: &Display,
         target: &mut Frame
     ) -> bool {        
-        if !graph.editor_visible() {
-            return false;
+        if graph.editor_visible() {        
+            self.begin_frame(display);
+            self.set_visuals();
+            self.render_windows(graph, event_producer);
+            self.end_frame_and_paint(display, target);
+            return true;
         }
-        
-        self.begin_frame(display);
-        self.set_visuals();
-        
-        self.render_windows(graph, event_producer);
 
-        self.end_frame_and_paint(display, target)
+        false
     }
 
     fn set_visuals(&mut self) {
@@ -87,12 +86,40 @@ impl EditorRenderer {
                 render_separator(ui),
             EditorGraphNode::ScrollArea { children } =>
                 self.render_scroll_area(ui, window, children, graph, event_producer),
+            EditorGraphNode::Button { title,  item} => 
+                self.render_button(ui, window, item, &title, event_producer),
             EditorGraphNode::EntityListItems { item } => 
                 render_entity_list_items(ui, window, graph, item, event_producer),
-            EditorGraphNode::Vector { item, title, } => 
+            EditorGraphNode::EntityVector { item, title, } => 
                 self.render_entity_data(ui, window, graph, item, &title, event_producer),
-            EditorGraphNode::Float { item, title, } => 
+            EditorGraphNode::EntityDimensions { item, title, } => 
                 self.render_entity_data(ui, window, graph, item, &title, event_producer),
+            EditorGraphNode::EntityFloat { item, title, } => 
+                self.render_entity_data(ui, window, graph, item, &title, event_producer),
+        }
+    }
+
+    fn render_entity_data(
+        &self,
+        ui: &mut egui::Ui,
+        window: &EditorGraphWindow,
+        graph: &EditorGraph,
+        item: &EditorGraphDataItem,
+        label: &str,
+        event_producer: &mut SystemEventProducer
+    ) {
+        if let Some(selected_entity) = window.selected_entity() {
+            if let Some(data_item) = graph.entity_data().get(&(selected_entity, *item)) {
+                match data_item {
+                    EditorGraphData::EntityVector { entity, mut value } => 
+                        render_entity_vector(ui, item, entity, value),
+                    EditorGraphData::EntityDimensions { entity, mut value } =>
+                        render_entity_dimensions(ui, item, entity, value),
+                    EditorGraphData::EntityFloat { entity, mut value } => 
+                        render_entity_float(ui, item, entity, value),
+                    _ => {}
+                }
+            }
         }
     }
 
@@ -131,6 +158,7 @@ impl EditorRenderer {
         event_producer: &mut SystemEventProducer
     ) {
         egui::Window::new(name)
+            .open(&mut true)
             .resizable(false)
             .show(self.egui.ctx(), |ui| {
                 self.render_children(ui, window, window.controls(), graph, event_producer);
@@ -147,6 +175,19 @@ impl EditorRenderer {
     ) {
         self.render_children(ui, window, children, graph, event_producer)
     }
+
+    fn render_button(
+        &self, 
+        ui: &mut egui::Ui,
+        window: &EditorGraphWindow,
+        item: &EditorGraphDataItem,
+        label: &str,
+        event_producer: &mut SystemEventProducer
+    ) {
+        if ui.button(label).clicked() {
+            event_producer.push(SystemEvent::EditorChange(EditorEvent::ButtonClicked(*item, window.id())))
+        }
+    }
     
     fn render_scroll_area(
         &self,
@@ -162,39 +203,6 @@ impl EditorRenderer {
                     self.render_node(ui, window, graph, group_child_node, event_producer);
                 }    
             });
-    }
-
-    fn render_entity_data(
-        &self,
-        ui: &mut egui::Ui,
-        window: &EditorGraphWindow,
-        graph: &EditorGraph,
-        item: &EditorGraphDataItem,
-        label: &str,
-        event_producer: &mut SystemEventProducer
-    ) {
-        if let Some(selected_entity) = window.selected_entity() {
-            if let Some(data_item) = graph.entity_data().get(&(selected_entity, *item)) {
-                match data_item {
-                    EditorGraphData::EntityVector { entity, mut value } => {
-                        ui.horizontal(|ui| {
-                            ui.label(label);
-                            if render_float(ui, "x:", &mut value.x) || render_float(ui, "y:", &mut value.y) {
-                                event_producer.push(SystemEvent::EditorChange(EditorEvent::VectorChanged(*item, *entity, value)))
-                            }
-                        });
-                    },
-                    EditorGraphData::EntityFloat { entity, mut value } => {
-                        ui.horizontal(|ui| {
-                            if render_float(ui, label, &mut value) {
-                                event_producer.push(SystemEvent::EditorChange(EditorEvent::FloatChanged(*item, *entity, value)))
-                            }
-                        });
-                    },
-                    _ => {}
-                }
-            }
-        }
     }
 }
 
@@ -218,6 +226,32 @@ fn render_entity_list_items(
             _ => {},
         }
     }
+}
+
+fn render_entity_vector(ui: &mut egui::Ui, item: &EditorGraphDataItem, entity: &Entity, value: Vector) {
+    ui.horizontal(|ui| {
+        ui.label(label);
+        if render_float(ui, "x:", &mut value.x) || render_float(ui, "y:", &mut value.y) {
+            event_producer.push(SystemEvent::EditorChange(EditorEvent::VectorChanged(item, entity, value)))
+        }
+    });
+}
+
+fn render_entity_dimensions(ui: &mut egui::Ui, item: &EditorGraphDataItem, entity: &Entity, value: Dimensions) {
+    ui.horizontal(|ui| {
+        ui.label(label);
+        if render_float(ui, "width:", &mut value.x) || render_float(ui, "height:", &mut value.y) {
+            event_producer.push(SystemEvent::EditorChange(EditorEvent::DimensionsChanged(item, entity, value)))
+        }
+    });
+}
+
+fn render_entity_float(ui: &mut egui::Ui, item: &EditorGraphDataItem, entity: &Entity, value: f32) {
+    ui.horizontal(|ui| {
+        if render_float(ui, label, &mut value) {
+            event_producer.push(SystemEvent::EditorChange(EditorEvent::FloatChanged(*item, *entity, value)))
+        }
+    });
 }
 
 fn render_float(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
