@@ -21,7 +21,7 @@ pub fn create_editor_maximum_velocity() -> EditorGraphNode {
 
 pub fn create_editor_collision_box() -> EditorGraphNode {
     let item = EditorItems::CollisionBox.into();
-    create_editor_float(item, "Collision Box")
+    create_editor_dimensions(item, "Collision Box")
 }
 
 pub fn create_editor_tab(children: Vec::<EditorGraphNode>) -> EditorGraphNode {
