@@ -112,11 +112,11 @@ impl EditorRenderer {
             if let Some(data_item) = graph.entity_data().get(&(selected_entity, *item)) {
                 match data_item {
                     EditorGraphData::EntityVector { entity, mut value } => 
-                        render_entity_vector(ui, item, entity, value),
+                        render_entity_vector(ui, label, item, entity, &mut value, event_producer),
                     EditorGraphData::EntityDimensions { entity, mut value } =>
-                        render_entity_dimensions(ui, item, entity, value),
+                        render_entity_dimensions(ui, label, item, entity, &mut value, event_producer),
                     EditorGraphData::EntityFloat { entity, mut value } => 
-                        render_entity_float(ui, item, entity, value),
+                        render_entity_float(ui, label, item, entity, &mut value, event_producer),
                     _ => {}
                 }
             }
@@ -228,28 +228,49 @@ fn render_entity_list_items(
     }
 }
 
-fn render_entity_vector(ui: &mut egui::Ui, item: &EditorGraphDataItem, entity: &Entity, value: Vector) {
+fn render_entity_vector(
+    ui: &mut egui::Ui,
+    label: &str,
+    item: &EditorGraphDataItem,
+    entity: &Entity,
+    value: &mut Vector,
+    event_producer: &mut SystemEventProducer
+) {
     ui.horizontal(|ui| {
         ui.label(label);
         if render_float(ui, "x:", &mut value.x) || render_float(ui, "y:", &mut value.y) {
-            event_producer.push(SystemEvent::EditorChange(EditorEvent::VectorChanged(item, entity, value)))
+            event_producer.push(SystemEvent::EditorChange(EditorEvent::VectorChanged(*item, *entity, *value)))
         }
     });
 }
 
-fn render_entity_dimensions(ui: &mut egui::Ui, item: &EditorGraphDataItem, entity: &Entity, value: Dimensions) {
+fn render_entity_dimensions(
+    ui: &mut egui::Ui,
+    label: &str,
+    item: &EditorGraphDataItem,
+    entity: &Entity,
+    value: &mut Dimensions,
+    event_producer: &mut SystemEventProducer
+) {
     ui.horizontal(|ui| {
         ui.label(label);
-        if render_float(ui, "width:", &mut value.x) || render_float(ui, "height:", &mut value.y) {
-            event_producer.push(SystemEvent::EditorChange(EditorEvent::DimensionsChanged(item, entity, value)))
+        if render_float(ui, "width:", &mut value.width) || render_float(ui, "height:", &mut value.height) {
+            event_producer.push(SystemEvent::EditorChange(EditorEvent::DimensionsChanged(*item, *entity, *value)))
         }
     });
 }
 
-fn render_entity_float(ui: &mut egui::Ui, item: &EditorGraphDataItem, entity: &Entity, value: f32) {
+fn render_entity_float(
+    ui: &mut egui::Ui,
+    label: &str,
+    item: &EditorGraphDataItem,
+    entity: &Entity, 
+    value: &mut f32,
+    event_producer: &mut SystemEventProducer
+) {
     ui.horizontal(|ui| {
-        if render_float(ui, label, &mut value) {
-            event_producer.push(SystemEvent::EditorChange(EditorEvent::FloatChanged(*item, *entity, value)))
+        if render_float(ui, label, value) {
+            event_producer.push(SystemEvent::EditorChange(EditorEvent::FloatChanged(*item, *entity, *value)))
         }
     });
 }

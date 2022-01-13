@@ -13,6 +13,10 @@ pub struct EditorVectorChange {
     pub item: EditorGraphDataItem,
     pub value: Vector
 }
+pub struct EditorDimensionsChange {
+    pub item: EditorGraphDataItem,
+    pub value: Dimensions
+}
 
 pub struct EditorFloatChange {
     pub item: EditorGraphDataItem,

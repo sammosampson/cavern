@@ -69,6 +69,7 @@ pub fn build_play_schedule() -> Schedule {
         .add_thread_local(editing::editor_graph_entity_extraction_system())
         .add_thread_local(editing::editor_graph_position_extraction_system())
         .add_thread_local(editing::editor_graph_velocity_extraction_system())
+        .add_thread_local(editing::editor_graph_collision_extraction_system())
         .flush()
         .add_thread_local(movement::set_position_system())
         .flush()

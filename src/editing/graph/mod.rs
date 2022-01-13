@@ -154,6 +154,10 @@ impl EditorGraph {
         self.add_entity_data(entity, item, EditorGraphData::EntityVector { entity, value })
     }
 
+    pub fn add_dimensions_entity_data(&mut self, item: EditorGraphDataItem, entity: Entity, value: Dimensions) {
+        self.add_entity_data(entity, item, EditorGraphData::EntityDimensions { entity, value })
+    }
+
     pub fn add_float_entity_data(&mut self, item: EditorGraphDataItem, entity: Entity, value: f32) {
         self.add_entity_data(entity, item, EditorGraphData::EntityFloat { entity, value })
     }

@@ -33,6 +33,8 @@ pub fn editor_event_handling(
                 },
                 EditorEvent::VectorChanged(item, entity, value) => 
                     buffer.add_component(*entity, EditorVectorChange { item: *item, value: *value }),
+                EditorEvent::DimensionsChanged(item, entity, value) => 
+                    buffer.add_component(*entity, EditorDimensionsChange { item: *item, value: *value }),
                 EditorEvent::FloatChanged(item, entity, value) => 
                     buffer.add_component(*entity, EditorFloatChange { item: *item, value: *value })
             }
@@ -75,4 +77,13 @@ pub fn editor_graph_velocity_extraction(
 ) {
     editor_graph.add_vector_entity_data(EditorItems::Velocity.into(), *entity, **velocity);
     editor_graph.add_float_entity_data(EditorItems::MaximumVelocity.into(), *entity, **maximum_velocity);
+}
+
+#[system(for_each)]
+pub fn editor_graph_collision_extraction(
+    entity: &Entity,
+    collision_box: &CollisionBox,
+    #[resource] editor_graph: &mut EditorGraph
+) {
+    editor_graph.add_dimensions_entity_data(EditorItems::CollisionBox.into(), *entity, **collision_box);
 }
